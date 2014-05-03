@@ -16,6 +16,7 @@ public class PatchesRandomizerCS : MonoBehaviour {
 	private GameObject goPreviousPatch;//the patch the the player passed
 	private GameObject goCurrentPatch;//the patch the player is currently on
 	private GameObject goNextPatch;//the next patch located immediatly after current patch
+	private GameObject goNextPatch2;
 	private float fPatchDistance;//default displacement of patch
 	private Transform tPlayer;//player transform
 	
@@ -114,6 +115,9 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		//relocateCP (goNextPatch,new Vector3(getPatchSize(goCurrentPatch),0,-getCPStartPosition(goCurrentPatch).z-getCPStartPosition(goNextPatch).z+getCPFinishPosition(goCurrentPatch).z));
 		//fTotalPath += getPatchSize (goNextPatch);
 		connectPatch (goCurrentPatch,goNextPatch);
+
+		goNextPatch2 = (GameObject)Instantiate((GameObject)patchesPrefabs[UnityEngine.Random.Range(0,patchesPrefabs.Length)], new Vector3(0,0,0), new Quaternion());
+		connectPatch (goNextPatch,goNextPatch2);
 	}
 
 	public void relocateCP(GameObject obj,Vector3 pos)
@@ -148,7 +152,7 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		Matrix4x4 mat = new Matrix4x4 ();
 		mat.SetTRS (new Vector3(0,0,0),obj.transform.rotation,new Vector3(1,1,1));
 		PathLineDrawerCS ptr = (PathLineDrawerCS)(obj.GetComponentInChildren<PathLineDrawerCS>());
-		return mat.MultiplyVector(ptr.Parameterized_CPPositions[0]) + ptr.pos;
+		return mat.MultiplyVector(ptr.Parameterized_CPPositions[1]) + ptr.pos;
 		//CPPositions = new Vector3[((PathLineDrawerCS)tCPsGroup.GetComponent(typeof(PathLineDrawerCS))).Parameterized_CPPositions.Length];
 		//return new Vector3();
 	}
@@ -157,20 +161,20 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		Matrix4x4 mat = new Matrix4x4 ();
 		mat.SetTRS (new Vector3(0,0,0),obj.transform.rotation,new Vector3(1,1,1));
 		PathLineDrawerCS ptr = (PathLineDrawerCS)(obj.GetComponentInChildren<PathLineDrawerCS>());
-		return mat.MultiplyVector(ptr.Parameterized_CPPositions[ptr.Parameterized_CPPositions.Length-1]) + ptr.pos;
+		return mat.MultiplyVector(ptr.Parameterized_CPPositions[ptr.Parameterized_CPPositions.Length-2]) + ptr.pos;
 	}
 
 	public Vector3 getOriginCPStartPosition(GameObject obj)
 	{
 		PathLineDrawerCS ptr = (PathLineDrawerCS)(obj.GetComponentInChildren<PathLineDrawerCS>());
-		return ptr.Parameterized_CPPositions[0];
+		return ptr.Parameterized_CPPositions[1];
 		//CPPositions = new Vector3[((PathLineDrawerCS)tCPsGroup.GetComponent(typeof(PathLineDrawerCS))).Parameterized_CPPositions.Length];
 		//return new Vector3();
 	}
 	public Vector3 getOriginCPFinishPosition(GameObject obj)
 	{
 		PathLineDrawerCS ptr = (PathLineDrawerCS)(obj.GetComponentInChildren<PathLineDrawerCS>());
-		return ptr.Parameterized_CPPositions[ptr.Parameterized_CPPositions.Length-1];
+		return ptr.Parameterized_CPPositions[ptr.Parameterized_CPPositions.Length-2];
 	}
 
 	public PathLineDrawerCS.EN_PATHOUT getPatchType(GameObject obj)
@@ -187,14 +191,17 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		Vector3 ofpos = getOriginCPFinishPosition (cur);
 		Vector3 spos = getOriginCPStartPosition (next);
 
+
 		Vector3 eulerAngles = cur.transform.eulerAngles;
 		switch (getPatchType (cur)) 
 		{
 		case PathLineDrawerCS.EN_PATHOUT.PATHOUT_TOP:
+			/*
 			pos.x = ofpos.x-10.5903f;
 			pos.y = ofpos.y;
 			pos.z = ofpos.z - ocpos.z - spos.z;
-
+			*/
+		//	pos.x = fpos.x - 10.5903f;
 			eulerAngles.y -= 90;
 
 			break;
@@ -208,9 +215,12 @@ public class PatchesRandomizerCS : MonoBehaviour {
 			pos.z = ofpos.z - ocpos.z - spos.z;
 			break;
 		}
-		next.transform.RotateAround(fpos,new Vector3(0,1,0),eulerAngles.y);
+		Debug.Log (cpos.x);
+		//if (cpos.x <= -9.1f && cpos.x >= -9.9f) {
+			next.transform.RotateAround (fpos, new Vector3 (0, 1, 0), eulerAngles.y);
+		//}
 
-		relocateCP (next,pos);
+		relocateCP (next,-ocpos+fpos);
 	}
 
 	public GameObject getCurrentPatch() { return goCurrentPatch; }
