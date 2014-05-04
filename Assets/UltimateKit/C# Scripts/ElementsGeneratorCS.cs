@@ -350,19 +350,23 @@ public class ElementsGeneratorCS : MonoBehaviour {
 		}
 		else//normal case; generate any random element
 		{
+			Debug.Log("--------------------------------");
 			for (i=0; i<iTotalCount; i++)
 			{	
 				if ( (elements[i].elementType == ElementType.Powerup 
 				&& hPowerupsMainControllerCS.isPowerupActive() )	//do not generate powerup if one is already active
 				|| (elements[i].elementType == ElementType.Powerup && bPowerupPlaced == true) )	//do not place powerup on current patch if one has already been placed
 					continue;
-				
+
+
 				tempFreq = elements[i].iFrequency * Random.value;
+
 				if (highestFrequency < tempFreq)
 				{
 					highestFrequency = tempFreq;
 					elementIndex = i;
 				}
+				Debug.Log ("h "+highestFrequency+" f "+elements[i].iFrequency + " r "+Random.value+" t "+tempFreq);
 			}//end of for
 		}
 		
@@ -374,7 +378,7 @@ public class ElementsGeneratorCS : MonoBehaviour {
 	}
 	
 	/*
-	*	FUNCTION: Generate a list of clones of all elements to be used int the game
+	*	FUNCTION: Generate a list of clones of all elements to be used in the game
 	*	CALLED BY: Start()
 	*/
 	private void setPrefabHandlers()
