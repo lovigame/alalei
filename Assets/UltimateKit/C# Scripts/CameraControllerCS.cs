@@ -84,9 +84,10 @@ public class CameraControllerCS : MonoBehaviour {
 	{
 		fCameraDistance = Mathf.Lerp(fCameraDistance,fCameraLerpValue,Time.deltaTime*1.5f);
 		fCurrentCamDir = Mathf.Lerp(fCurrentCamDir,-hControllerScriptCS.getCurrentPlayerRotation()+90.0f,Time.deltaTime*4.0f);
-		tCamera.localEulerAngles = new Vector3(fCameraRotationX, fCurrentCamDir, fCameraRotationZ);
-		v3CamDirection = rotateAlongY(new Vector3(-1,0,0),-hControllerScriptCS.getCurrentPlayerRotation());
-			
+		tCamera.localEulerAngles = new Vector3(fCameraRotationX, -hControllerScriptCS.getCurrentPlayerRotation()+90.0f, fCameraRotationZ);
+		//tCamera.localEulerAngles = new Vector3(fCameraRotationX, fCurrentCamDir, fCameraRotationZ);
+
+		v3CamDirection = rotateAlongY(new Vector3(-1,0,0),-hControllerScriptCS.getCurrentPlayerRotation ());
 		if (iCameraState == 1)	//regular gameplay
 		{
 			fCameraLerpValue = 35;//maintain a static distance between camera and the player
@@ -95,7 +96,7 @@ public class CameraControllerCS : MonoBehaviour {
 				Mathf.Lerp(tCamera.position.z, (tPlayerMesh.position.z + v3CamDirection.z*fCameraDistance), Time.deltaTime*50) );
 		}	
 		else if(iCameraState == 2)	//Camera on death 
-		{	
+		{		
 			fCameraLerpValue = 60;//increase the distance between the camera and the player
 			tCamera.position = tPlayerMesh.position + v3CamDirection*fCameraDistance;
 			tCamera.position = new Vector3(tCamera.position.x, tCamera.position.y+30, tCamera.position.z);//increase the height of the camera
@@ -106,8 +107,10 @@ public class CameraControllerCS : MonoBehaviour {
 		}
 		
 		//make the camera shake if the fCamShakeImpulse is not zero
-		if(fCamShakeImpulse>0.0f)
-			shakeCamera();
+		if (fCamShakeImpulse > 0.0f) 
+		{			
+			shakeCamera ();
+		}
 	}
 	
 	/*

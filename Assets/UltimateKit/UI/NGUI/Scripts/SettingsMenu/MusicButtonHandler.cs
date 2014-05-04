@@ -6,13 +6,13 @@ public class MusicButtonHandler : MonoBehaviour {
 	enum State { On, Off }
 	
 	private SoundManagerCS hSoundManagerCS;
-	private UICheckbox uicMusic;
+	//private UICheckbox uicMusic;
 	private State state;//if the music is ON of OFF
 	
 	void Start () 
 	{
 		hSoundManagerCS = (SoundManagerCS)GameObject.Find("SoundManager").GetComponent(typeof(SoundManagerCS));
-		uicMusic = (UICheckbox)this.GetComponent(typeof(UICheckbox));
+	//	uicMusic = (UICheckbox)this.GetComponent(typeof(UICheckbox));
 		
 		//check if the script is a part of On or Off radio button		
 		if (this.name == "On")
@@ -23,17 +23,17 @@ public class MusicButtonHandler : MonoBehaviour {
 		//set the Music radio button to On or Off
 		if (state == State.On)
 		{
-			if (hSoundManagerCS.isMusicEnabled())
-				uicMusic.isChecked = true;
-			else
-				uicMusic.isChecked = false;
+		//	if (hSoundManagerCS.isMusicEnabled())
+			//	uicMusic.isChecked = true;
+		//	else
+		//		uicMusic.isChecked = false;
 		}
 		else if (state == State.Off)
 		{
-			if (!hSoundManagerCS.isMusicEnabled())
-				uicMusic.isChecked = true;
-			else
-				uicMusic.isChecked = false;
+		//	if (!hSoundManagerCS.isMusicEnabled())
+		//		uicMusic.isChecked = true;
+		//	else
+		//		uicMusic.isChecked = false;
 		}
 	}//end of Start()
 	

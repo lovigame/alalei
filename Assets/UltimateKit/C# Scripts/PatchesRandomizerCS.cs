@@ -29,6 +29,7 @@ public class PatchesRandomizerCS : MonoBehaviour {
 	private InGameScriptCS hInGameScriptCS;
 	private ElementsGeneratorCS hElementsGeneratorCS;
 	private CheckPointsMainCS hCheckPointsMainCS;
+	private double dElapseTime = 0.0;
 
 	private Vector3 vPatchStartPos;
 
@@ -64,11 +65,14 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		
 		//destroy the patch if the Player has crossed it
 		//if(tPlayer.position.x>(iCurrentPNum*fPatchDistance)+100.0f)
-		if(isCross && tPlayer.position.x>fPrePath+100.0f)
+		if(isCross)
 		{
-			isCross = false;
-			Destroy(goPreviousPatch);
-			iCurrentPNum++;
+			dElapseTime += Time.deltaTime;
+			if(dElapseTime > 1){
+				isCross = false;
+				Destroy(goPreviousPatch);
+				iCurrentPNum++;
+			}
 		}
 	}//end of update
 	
@@ -83,6 +87,7 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		fPrePath = fTotalPath;
 		fTotalPath += getPatchSize (goCurrentPatch);
 		isCross = true;
+		dElapseTime = 0.0;
 		instantiateNextPatch();	
 		hCheckPointsMainCS.setChildGroups();
 
@@ -116,8 +121,8 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		//fTotalPath += getPatchSize (goNextPatch);
 		connectPatch (goCurrentPatch,goNextPatch);
 
-		goNextPatch2 = (GameObject)Instantiate((GameObject)patchesPrefabs[UnityEngine.Random.Range(0,patchesPrefabs.Length)], new Vector3(0,0,0), new Quaternion());
-		connectPatch (goNextPatch,goNextPatch2);
+		//goNextPatch2 = (GameObject)Instantiate((GameObject)patchesPrefabs[UnityEngine.Random.Range(0,patchesPrefabs.Length)], new Vector3(0,0,0), new Quaternion());
+	//	connectPatch (goNextPatch,goNextPatch2);
 	}
 
 	public void relocateCP(GameObject obj,Vector3 pos)
@@ -215,10 +220,8 @@ public class PatchesRandomizerCS : MonoBehaviour {
 			pos.z = ofpos.z - ocpos.z - spos.z;
 			break;
 		}
-		Debug.Log (cpos.x);
-		//if (cpos.x <= -9.1f && cpos.x >= -9.9f) {
-			next.transform.RotateAround (fpos, new Vector3 (0, 1, 0), eulerAngles.y);
-		//}
+		next.transform.RotateAround (fpos, new Vector3 (0, 1, 0), eulerAngles.y);
+
 
 		relocateCP (next,-ocpos+fpos);
 	}

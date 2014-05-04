@@ -657,6 +657,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   patchesPrefabs:
+  - {fileID: 100006, guid: 11151f582788e4f2a83607633080a84d, type: 2}
   - {fileID: 100048, guid: 4003bb768157b4305b8c61b83da5ecd0, type: 2}
 --- !u!114 &329
 MonoBehaviour:

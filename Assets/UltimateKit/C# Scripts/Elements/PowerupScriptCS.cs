@@ -15,6 +15,7 @@ public class PowerupScriptCS : MonoBehaviour {
 	private Transform tPlayer;//player transform
 	private int PUState = 0;
 	private float StartTime = 0.0f;
+	public GameObject father;
 	
 	//script references
 	private InGameScriptCS hInGameScriptCS;
@@ -54,6 +55,7 @@ public class PowerupScriptCS : MonoBehaviour {
 			
 		if(PUState==1)//hide the powerup
 		{
+			Debug.Log ("hide");
 			if (hPowerupsMainControllerCS.isPowerupActive(PowerupsMainControllerCS.PowerUps.Magnetism) == true)	//magnetism powerup is active
 			{
 				//adjust the currency's height
@@ -76,8 +78,10 @@ public class PowerupScriptCS : MonoBehaviour {
 			{	
 				//disable currency if magnetism is activated
 				if (powerupType == PowerupsMainControllerCS.PowerUps.Currency 
-					|| hPowerupsMainControllerCS.isPowerupActive(PowerupsMainControllerCS.PowerUps.Magnetism) == true)			
-					toggleMeshRenderer(false);//make currency invisible			
+					|| hPowerupsMainControllerCS.isPowerupActive(PowerupsMainControllerCS.PowerUps.Magnetism) == true)	
+				{
+					toggleMeshRenderer(false);//make currency invisible		
+				}
 				else			
 					this.gameObject.SetActive(false);//deactivate object			
 			}
@@ -91,14 +95,16 @@ public class PowerupScriptCS : MonoBehaviour {
 			bDestroyWhenFarFlag = true;
 		
 		//destroy currency or powerup if not collected
-		if(bDestroyWhenFarFlag==true)
-			if(v3DistanceVector.sqrMagnitude>90000.0f)
-			{
-				if (powerupType == PowerupsMainControllerCS.PowerUps.Currency)			
-					toggleMeshRenderer(false);			
-				else
-					this.gameObject.SetActive(false);
-			}
+		if (bDestroyWhenFarFlag == true) {
+						if (v3DistanceVector.sqrMagnitude > 90000.0f) {
+								if (powerupType == PowerupsMainControllerCS.PowerUps.Currency) {
+										Debug.Log ("current false");
+										toggleMeshRenderer (false);	
+								} else {
+										this.gameObject.SetActive (false);
+								}
+						}
+				}
 	
 		if(powerupType==PowerupsMainControllerCS.PowerUps.Currency)//currency pull radius	
 			fCatchRadius = hPowerupsMainControllerCS.getMagnetismRadius();

@@ -295,6 +295,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400034}
+  - 114: {fileID: 11400004}
   m_Layer: 0
   m_Name: Patch_Forest_1
   m_TagString: Untagged
@@ -14676,8 +14677,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 101082}
-  m_LocalRotation: {x: 1.37678782e-07, y: .707106829, z: .707106829, w: -1.37678782e-07}
-  m_LocalPosition: {x: 39.139473, y: .219812602, z: -1500.76025}
+  m_LocalRotation: {x: 1.15202326e-07, y: -.707106709, z: -.707106829, w: -1.15202312e-07}
+  m_LocalPosition: {x: 39.139473, y: 0, z: -1500.76025}
   m_LocalScale: {x: 3.14323878, y: 12.1372747, z: 2.53999996}
   m_Children: []
   m_Father: {fileID: 401084}
@@ -15419,6 +15420,17 @@ MonoBehaviour:
   fHeight: 0
   pos: {x: 0, y: 0, z: 0}
   ePathOut: 0
+--- !u!114 &11400004
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3efd51dbd28074f6393f3701e6dc2c34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

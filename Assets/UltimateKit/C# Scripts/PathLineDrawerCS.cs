@@ -138,16 +138,8 @@ public class PathLineDrawerCS : MonoBehaviour {
 			Current_TD+=Vector3.Distance(CurrentPoint,PreviousPoint);
 			if(Current_TD>=CP_Increment)
 			{
-				try{
 				FinalPoints[Index] = CurrentPoint;
-				}
-				catch(IndexOutOfRangeException e)
-				{
-					Debug.LogError(e.Message);
-					Debug.Log (Index);
-					Debug.Log (i);
-					break;
-				}
+				
 				Current_TD = 0;
 				Index++;
 			}

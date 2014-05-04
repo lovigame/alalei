@@ -4,13 +4,13 @@ using System.Collections;
 public class ControlsButtonHandler : MonoBehaviour {
 	
 	private ControllerScriptCS hControllerScriptCS;
-	private UICheckbox uicControls;
+//	private UICheckbox uicControls;
 	private ControllerScriptCS.ControlType controlType;
 	
 	void Start ()
 	{
 		hControllerScriptCS = (ControllerScriptCS)GameObject.Find("Player").GetComponent(typeof(ControllerScriptCS));
-		uicControls = (UICheckbox)this.GetComponent(typeof(UICheckbox));
+	//	uicControls = (UICheckbox)this.GetComponent(typeof(UICheckbox));
 		
 		//check which radio button is this
 		if (this.name == "Swipe")
@@ -21,17 +21,17 @@ public class ControlsButtonHandler : MonoBehaviour {
 		//check or uncheck according to type of controls currently enabled
 		if (controlType == ControllerScriptCS.ControlType.Swipe)
 		{
-			if (hControllerScriptCS.isSwipeControlEnabled())
-				uicControls.isChecked = true;
-			else
-				uicControls.isChecked = false;
+		//	if (hControllerScriptCS.isSwipeControlEnabled())
+		//		uicControls.isChecked = true;
+		//	else
+		//		uicControls.isChecked = false;
 		}
 		else if (controlType == ControllerScriptCS.ControlType.Gyro)
 		{
-			if (!hControllerScriptCS.isSwipeControlEnabled())
-				uicControls.isChecked = true;
-			else
-				uicControls.isChecked = false;
+		//	if (!hControllerScriptCS.isSwipeControlEnabled())
+		//		uicControls.isChecked = true;
+		//	else
+		//		uicControls.isChecked = false;
 		}		
 	}//end of start
 	
