@@ -374,7 +374,12 @@ public class ControllerScriptCS : MonoBehaviour {
 		}//end of mouserelease == true if
 			
 	}//end of get clicks function
-	
+
+	public Vector3 applyRotation(Vector3 pos){
+		Matrix4x4 mat = new Matrix4x4 ();
+		mat.SetTRS (new Vector3(0,0,0),tPlayer.rotation,new Vector3(1,1,1));
+		return mat.MultiplyVector (pos);
+	}
 	/*
 	*	FUNCITON: Set the position of the shadow under the player and of the
 	*				colliders to make them move with the character mesh.
@@ -390,11 +395,11 @@ public class ControllerScriptCS : MonoBehaviour {
 			tPlayerRotation.localEulerAngles.y, tBlobShadowPlane.localEulerAngles.z);
 		
 		//set side collider's position and rotation
-		tPlayerSidesCollider.position = tPlayer.position + new Vector3(0,5,0);
+		tPlayerSidesCollider.position = tPlayer.position+ applyRotation(new Vector3(0,5,0));
 		tPlayerSidesCollider.localEulerAngles = tBlobShadowPlane.localEulerAngles;//set 
 		
 		//set front collider's position and rotation
-		tFrontCollider.position = tPlayer.position + new Vector3(7,5,0);
+		tFrontCollider.position = tPlayer.position + applyRotation(new Vector3(0,5,0));
 		tFrontCollider.localEulerAngles = tBlobShadowPlane.localEulerAngles;
 	}
 	

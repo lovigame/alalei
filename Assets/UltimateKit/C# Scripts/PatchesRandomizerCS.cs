@@ -169,6 +169,8 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		return mat.MultiplyVector(ptr.Parameterized_CPPositions[ptr.Parameterized_CPPositions.Length-2]) + ptr.pos;
 	}
 
+
+
 	public Vector3 getOriginCPStartPosition(GameObject obj)
 	{
 		PathLineDrawerCS ptr = (PathLineDrawerCS)(obj.GetComponentInChildren<PathLineDrawerCS>());

@@ -114,6 +114,10 @@ public class ElementsGeneratorCS : MonoBehaviour {
 	*/
 	private float generateElements(int elementNumber, float fLocation, bool bStartPatch)
 	{	
+		if (true) {
+			//return 0.05f;
+		}
+
 		Vector3 v3Position;	//position to put the obstacle on
 		RaycastHit hitInfo;	//check y-axis location
 		float CurrentAngle;	//billboard the obstacle towards the player
@@ -350,7 +354,6 @@ public class ElementsGeneratorCS : MonoBehaviour {
 		}
 		else//normal case; generate any random element
 		{
-			Debug.Log("--------------------------------");
 			for (i=0; i<iTotalCount; i++)
 			{	
 				if ( (elements[i].elementType == ElementType.Powerup 
@@ -366,7 +369,7 @@ public class ElementsGeneratorCS : MonoBehaviour {
 					highestFrequency = tempFreq;
 					elementIndex = i;
 				}
-				Debug.Log ("h "+highestFrequency+" f "+elements[i].iFrequency + " r "+Random.value+" t "+tempFreq);
+				//Debug.Log ("h "+highestFrequency+" f "+elements[i].iFrequency + " r "+Random.value+" t "+tempFreq);
 			}//end of for
 		}
 		
