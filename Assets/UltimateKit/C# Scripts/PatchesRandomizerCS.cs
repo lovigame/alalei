@@ -43,7 +43,7 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		hInGameScriptCS = (InGameScriptCS)this.GetComponent(typeof(InGameScriptCS));
 		hCheckPointsMainCS = (CheckPointsMainCS)GetComponent(typeof(CheckPointsMainCS));
 		//hElementsGeneratorCS = (ElementsGeneratorCS)this.GetComponent(typeof(ElementsGeneratorCS));
-		
+
 		iCurrentPNum = 1;
 		fPreviousTotalDistance = 0.0f;
 		fPatchDistance = hCheckPointsMainCS.getDefaultPathLength();
