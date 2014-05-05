@@ -57,6 +57,9 @@ public class ElementsGeneratorCS : MonoBehaviour {
 	
 	void Start()
 	{
+		if (true) {
+			return;		
+		}
 		iObstacleCount = obstaclePrefabs.Length;
 		iPowerupCount = powerupPrefabs.Length;
 		iTotalCount = iObstacleCount + iPowerupCount + 1;//obstacles + powerups + currency
@@ -115,7 +118,7 @@ public class ElementsGeneratorCS : MonoBehaviour {
 	private float generateElements(int elementNumber, float fLocation, bool bStartPatch)
 	{	
 		if (true) {
-			//return 0.05f;
+			return 0.05f;
 		}
 
 		Vector3 v3Position;	//position to put the obstacle on

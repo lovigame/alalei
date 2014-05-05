@@ -55,7 +55,6 @@ public class PowerupScriptCS : MonoBehaviour {
 			
 		if(PUState==1)//hide the powerup
 		{
-			Debug.Log ("hide");
 			if (hPowerupsMainControllerCS.isPowerupActive(PowerupsMainControllerCS.PowerUps.Magnetism) == true)	//magnetism powerup is active
 			{
 				//adjust the currency's height
@@ -98,7 +97,6 @@ public class PowerupScriptCS : MonoBehaviour {
 		if (bDestroyWhenFarFlag == true) {
 						if (v3DistanceVector.sqrMagnitude > 90000.0f) {
 								if (powerupType == PowerupsMainControllerCS.PowerUps.Currency) {
-										Debug.Log ("current false");
 										toggleMeshRenderer (false);	
 								} else {
 										this.gameObject.SetActive (false);

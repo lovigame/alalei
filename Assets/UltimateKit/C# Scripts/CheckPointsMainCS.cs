@@ -64,7 +64,7 @@ public class CheckPointsMainCS : MonoBehaviour {
 		hInGameScriptCS = (InGameScriptCS)this.GetComponent(typeof(InGameScriptCS));
 		hControllerScriptCS = (ControllerScriptCS)this.GetComponent(typeof(ControllerScriptCS));
 		hPatchesRandomizerCS = (PatchesRandomizerCS)this.GetComponent(typeof(PatchesRandomizerCS));
-		hElementsGeneratorCS = (ElementsGeneratorCS)this.GetComponent(typeof(ElementsGeneratorCS));
+		//hElementsGeneratorCS = (ElementsGeneratorCS)this.GetComponent(typeof(ElementsGeneratorCS));
 	}
 
 
