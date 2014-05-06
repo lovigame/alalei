@@ -15,7 +15,8 @@ public class PowerupsMainControllerCS : MonoBehaviour {
 	{	
 		Magnetism = 0,
 		Ghost = 1,
-		Currency = 2
+		Currency = 2,
+		Rocket,
 	}
 	
 	private Transform tPlayer;	//player transform
@@ -165,6 +166,10 @@ public class PowerupsMainControllerCS : MonoBehaviour {
 			hPlayerFrontColliderScriptCS.deactivateCollider();
 			hPlayerSidesColliderScriptCS.deactivateCollider();
 		}
+		else if (index == (int)PowerUps.Rocket)
+		{
+		}
+
 	}
 	
 	/*

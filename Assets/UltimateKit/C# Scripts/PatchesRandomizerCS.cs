@@ -82,6 +82,9 @@ public class PatchesRandomizerCS : MonoBehaviour {
 	*/
 	public void createNewPatch()
 	{
+		if (goPreviousPatch != null) {
+			Destroy(goPreviousPatch);		
+		}
 		goPreviousPatch = goCurrentPatch;
 		goCurrentPatch = goNextPatch;
 		fPrePath = fTotalPath;
@@ -133,19 +136,7 @@ public class PatchesRandomizerCS : MonoBehaviour {
 
 	public float getPatchSize(GameObject obj)
 	{
-		/*
-		float t = 0.0f;
-		try{
-			TerrainCollider collider = ((TerrainCollider)(obj.GetComponentInChildren<TerrainCollider>()));
-			t = collider.bounds.size.x;
-		}
-		catch{
-			Debug.Log("exception");
-		}
 
-		return t;
-		*/
-		//return getCPFinishPosition (obj).x - getCPStartPosition (obj).x;
 
 		return ((PathLineDrawerCS)(obj.GetComponentInChildren<PathLineDrawerCS>())).fWidth;
 	}
@@ -158,8 +149,7 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		mat.SetTRS (new Vector3(0,0,0),obj.transform.rotation,new Vector3(1,1,1));
 		PathLineDrawerCS ptr = (PathLineDrawerCS)(obj.GetComponentInChildren<PathLineDrawerCS>());
 		return mat.MultiplyVector(ptr.Parameterized_CPPositions[1]) + ptr.pos;
-		//CPPositions = new Vector3[((PathLineDrawerCS)tCPsGroup.GetComponent(typeof(PathLineDrawerCS))).Parameterized_CPPositions.Length];
-		//return new Vector3();
+
 	}
 	public Vector3 getCPFinishPosition(GameObject obj)
 	{

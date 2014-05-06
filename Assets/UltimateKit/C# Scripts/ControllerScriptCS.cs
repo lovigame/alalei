@@ -108,6 +108,7 @@ public class ControllerScriptCS : MonoBehaviour {
 	
 	//change these to adjust the jump height and displacement
 	private float fJumpPush = 185;			//force with which player pushes the ground on jump
+	private float fJumpAddPush = 0.0f;
 	private int getAccleration() { return 500; }	//accleration and deceleration on jump
 	
 	//the initial distance of the player character at launch
@@ -117,6 +118,12 @@ public class ControllerScriptCS : MonoBehaviour {
 	//switch between gyro and swipe controls
 	private bool swipeControlsEnabled = true;
 	public bool isSwipeControlEnabled() { return swipeControlsEnabled; }
+
+	private float fSpeedRate = 1.0f;
+	private float fSpeedRestTime = 0.0f;
+
+	private float fFlyTime = 0.0f;
+	private float fFlyHeight = 70.0f;
 	
 	public void toggleSwipeControls(bool state)
 	{
@@ -244,7 +251,7 @@ public class ControllerScriptCS : MonoBehaviour {
 		if (!mecanimEnabled)//if legacy animations enabled
 		{
 			togglePlayerAnimation(true);
-			aPlayer["run"].speed = Mathf.Clamp( (fCurrentWalkSpeed/fStartingWalkSpeed)/1.1f, 0.8f, 1.2f );
+			aPlayer["run"].speed = Mathf.Clamp( (getCurrentWalkSpeed()/fStartingWalkSpeed)/1.1f, 0.8f, 1.2f );
 			aPlayer.Play("run");
 		}
 		else//if mecanim enabled
@@ -324,15 +331,16 @@ public class ControllerScriptCS : MonoBehaviour {
 			bExecuteLand = true;
 			bInJump = true;
 			bInAir = true;
-			
+
 			if (mecanimEnabled)//if mecanim animations are used
 			{
 				aPlayerMecAnim.SetBool("RunAnim", false);//disable run animation
 				aPlayerMecAnim.SetBool("DuckAnim", false);//disable slide animation
 			}		
 			
-			fCurrentUpwardVelocity = fJumpPush;
+			fCurrentUpwardVelocity = fJumpPush + fJumpAddPush;
 			fCurrentHeight = tPlayer.position.y;
+			fJumpAddPush = 0.0f;
 			
 			hMissionsControllerCS.incrementMissionCount(MissionsControllerCS.MissionTypes.Jump);//count jumps for mission script
 			hGlobalAchievementControllerCS.incrementAchievementCount(GlobalAchievementControllerCS.GlobalAchievementTypes.Jump);//count jumps for global achievements script
@@ -343,7 +351,7 @@ public class ControllerScriptCS : MonoBehaviour {
 			fCurrentWalkSpeed += (fCurrentWalkAccleration * Time.fixedDeltaTime);
 		
 		if (!mecanimEnabled)
-			aPlayer["run"].speed = Mathf.Clamp( (fCurrentWalkSpeed/fStartingWalkSpeed)/1.1f, 0.8f, 1.2f );	//set run animation speed according to current speed
+			aPlayer["run"].speed = Mathf.Clamp( (getCurrentWalkSpeed()/fStartingWalkSpeed)/1.1f, 0.8f, 1.2f );	//set run animation speed according to current speed
 	}//end of Fixed Update
 	
 	/*
@@ -402,6 +410,23 @@ public class ControllerScriptCS : MonoBehaviour {
 		tFrontCollider.position = tPlayer.position + applyRotation(new Vector3(0,5,0));
 		tFrontCollider.localEulerAngles = tBlobShadowPlane.localEulerAngles;
 	}
+
+	public void speedUP(float rate,float time)
+	{
+		fSpeedRate = rate;
+		fSpeedRestTime = time;
+	}
+
+	public void flyUP(float time)
+	{
+		fFlyTime = time;
+	}
+
+	public void jumpUP(float force)
+	{
+		bJumpFlag = true;
+		fJumpAddPush = force;
+	}
 	
 	/*
 	*	FUNCTION: Set the player's position the path with reference to the spline
@@ -409,6 +434,11 @@ public class ControllerScriptCS : MonoBehaviour {
 	*/
 	private void SetTransform()
 	{
+		fSpeedRestTime -= Time.deltaTime;
+		if (fSpeedRestTime <= 0.0f) {
+			fSpeedRestTime = 0.0f;
+			fSpeedRate = 1.0f;
+		}
 		int iStrafeDirection = (int)getLeftRightInput();	//get the current lane (-1, 0 or 1)
 		
 		fCurrentDistanceOnPath = hCheckPointsMainCS.SetNextMidPointandRotation(fCurrentDistanceOnPath, fCurrentForwardSpeed);//distance on current patch
@@ -422,10 +452,19 @@ public class ControllerScriptCS : MonoBehaviour {
 		CurrentDirection = hCheckPointsMainCS.getCurrentDirection();
 		Vector3 Desired_Horinzontal_Pos = calculateHorizontalPosition(iStrafeDirection);
 		
-		bGroundhit = Physics.Linecast(Desired_Horinzontal_Pos + new Vector3(0,20,0),Desired_Horinzontal_Pos + new Vector3(0,-100,0), out hitInfo,(1<<9));	
+		bGroundhit = Physics.Linecast(Desired_Horinzontal_Pos + new Vector3(0,20,0),Desired_Horinzontal_Pos + new Vector3(0,-100,0), out hitInfo,(1<<LayerMask.NameToLayer("Terrain_lyr")));	
 		
-		if(bGroundhit && hPitsMainControllerCS.isFallingInPit()==false)//calculate player position in y-axis
-			fContactPointY = hitInfo.point.y;
+		if (bGroundhit && hPitsMainControllerCS.isFallingInPit () == false) {//calculate player position in y-axis
+			RaycastHit hit;
+			if( Physics.Linecast(Desired_Horinzontal_Pos + new Vector3(0,20,0),Desired_Horinzontal_Pos + new Vector3(0,-100,0), out hit,(1<<LayerMask.NameToLayer("Land_lyr")))){
+				LandScriptCS _ls = (LandScriptCS)(hit.transform.GetComponent(typeof(LandScriptCS)));
+			
+				if(_ls != null){
+					_ls.hit();
+				}
+			}
+						fContactPointY = hitInfo.point.y;
+				}
 		else//call death if player in not on Terrain_lyr
 		{
 			fContactPointY = -10000.0f;
@@ -543,9 +582,9 @@ public class ControllerScriptCS : MonoBehaviour {
 		bool bGroundhit = false;
 		
 		if(iStrafeDirection>=0)
-			bGroundhit = Physics.Linecast(Desired_Horinzontal_Pos + new Vector3(1,20,5),Desired_Horinzontal_Pos + new Vector3(0,-100,5), out hitInfo,1<<9);
+			bGroundhit = Physics.Linecast(Desired_Horinzontal_Pos + new Vector3(1,20,5),Desired_Horinzontal_Pos + new Vector3(0,-100,5), out hitInfo,1<<LayerMask.NameToLayer("Terrain_lyr"));
 		else
-			bGroundhit = Physics.Linecast(Desired_Horinzontal_Pos + new Vector3(1,20,-5),Desired_Horinzontal_Pos + new Vector3(0,-100,-5), out hitInfo,1<<9);
+			bGroundhit = Physics.Linecast(Desired_Horinzontal_Pos + new Vector3(1,20,-5),Desired_Horinzontal_Pos + new Vector3(0,-100,-5), out hitInfo,1<<LayerMask.NameToLayer("Terrain_lyr"));
 		
 		if(!bGroundhit)
 			return true;
@@ -676,12 +715,12 @@ public class ControllerScriptCS : MonoBehaviour {
 		else
 			fForwardAccleration = 2.0f;
 			
-		fJumpForwardFactor = 1 + ((1/fCurrentWalkSpeed)*50);
+		fJumpForwardFactor = 1 + ((1/getCurrentWalkSpeed())*50);
 			
 		if(bInJump==true)
-			fCurrentForwardSpeed = Mathf.Lerp(fCurrentForwardSpeed,fCurrentWalkSpeed*Time.fixedDeltaTime*fJumpForwardFactor,Time.fixedDeltaTime*fForwardAccleration);
+			fCurrentForwardSpeed = Mathf.Lerp(fCurrentForwardSpeed,getCurrentWalkSpeed()*Time.fixedDeltaTime*fJumpForwardFactor,Time.fixedDeltaTime*fForwardAccleration);
 		else
-			fCurrentForwardSpeed = Mathf.Lerp(fCurrentForwardSpeed,(fCurrentWalkSpeed)*Time.fixedDeltaTime,Time.fixedDeltaTime*fForwardAccleration);
+			fCurrentForwardSpeed = Mathf.Lerp(fCurrentForwardSpeed,(getCurrentWalkSpeed())*Time.fixedDeltaTime,Time.fixedDeltaTime*fForwardAccleration);
 	}
 	
 	/*
@@ -1058,7 +1097,7 @@ public class ControllerScriptCS : MonoBehaviour {
 	public float getCurrentForwardSpeed() { return fCurrentForwardSpeed; }
 	public int getCurrentLane() { return iLanePosition; }
 	public float getCurrentPlayerRotation() { return tCurrentAngle; }
-	public float getCurrentWalkSpeed() { return fCurrentWalkSpeed; }
+	public float getCurrentWalkSpeed() { return fCurrentWalkSpeed*fSpeedRate; }
 	public bool isInAir()
 	{
 		if (bInAir || bJumpFlag || bInJump || bDiveFlag)

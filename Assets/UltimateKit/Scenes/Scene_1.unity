@@ -671,7 +671,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstaclePrefabs: []
-  powerupPrefabs: []
+  powerupPrefabs:
+  - {fileID: 100000, guid: dcdbe01b2999a45129e677f249078a4f, type: 2}
+  - {fileID: 100000, guid: 5f317cbbd24c54501a7788776c001d85, type: 2}
   currencyPrefab: {fileID: 100004, guid: 5aa14576ba85d4ea995984762c527f26, type: 2}
 --- !u!114 &330
 MonoBehaviour:
@@ -8934,32 +8936,6 @@ MonoBehaviour:
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 0, w: 0}
   mClipSoftness: {x: 40, y: 40}
---- !u!1 &377005177
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 377005178}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &377005178
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 377005177}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.09485435, y: -.41796875, z: 546.503052}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
 --- !u!1 &378832175
 GameObject:
   m_ObjectHideFlags: 0

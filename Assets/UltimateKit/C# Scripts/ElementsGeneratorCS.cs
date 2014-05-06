@@ -324,6 +324,13 @@ public class ElementsGeneratorCS : MonoBehaviour {
 			((PowerupScriptCS)ObjectHandle.GetComponent(typeof(PowerupScriptCS))).initPowerupScript();
 		}
 	}
+
+	public GameObject getRandomPowerup(){
+		if (powerupPrefabs.Length <= 0) {
+			return null;		
+		}
+		return powerupPrefabs[Mathf.FloorToInt( Random.Range(0,powerupPrefabs.Length))];
+	}
 	
 	/*
 	*	FUNCTION: Randomise an element to generate on the path
