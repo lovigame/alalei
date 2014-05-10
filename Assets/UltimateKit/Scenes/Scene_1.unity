@@ -212,7 +212,7 @@ AudioSource:
   serializedVersion: 3
   m_audioClip: {fileID: 8300000, guid: 1963fd4d61d1e4957a6a5b54c99ec293, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: .800000012
+  m_Volume: .398999989
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -273,17 +273,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   asCharacterSounds:
   - {fileID: 969}
-  - {fileID: 967}
+  - {fileID: 969}
   asPowerupSounds:
-  - {fileID: 50}
-  - {fileID: 50}
+  - {fileID: 969}
+  - {fileID: 969}
   asMenuSounds:
-  - {fileID: 968}
+  - {fileID: 969}
   asMusic:
-  - {fileID: 57}
+  - {fileID: 969}
   asEnemySounds:
-  - {fileID: 48}
-  - {fileID: 49}
+  - {fileID: 969}
+  - {fileID: 969}
 --- !u!82 &57
 AudioSource:
   m_ObjectHideFlags: 0
@@ -612,6 +612,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ed33517da9e74959a7f75b1876364f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bossPrefabs:
+  - {fileID: 100004, guid: 21338ceb0886f47eb9707db2e671149d, type: 2}
+  fBossDistance: 200
 --- !u!114 &325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1225,19 +1228,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89a6776035e35423f93b7e3143d635da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  asCharacterSounds:
-  - {fileID: 969}
-  - {fileID: 967}
-  asPowerupSounds:
-  - {fileID: 50}
-  - {fileID: 50}
-  asMenuSounds:
-  - {fileID: 968}
-  asMusic:
-  - {fileID: 57}
-  asEnemySounds:
-  - {fileID: 48}
-  - {fileID: 49}
+  asCharacterSounds: []
+  asPowerupSounds: []
+  asMenuSounds: []
+  asMusic: []
+  asEnemySounds: []
 --- !u!196 &1013
 NavMeshSettings:
   m_ObjectHideFlags: 0
@@ -31754,6 +31749,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 635}
     m_Modifications:
+    - target: {fileID: 11100000, guid: 5288da9e14d004954a4d3ca42aca0582, type: 2}
+      propertyPath: m_Animations.Array.size
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 400090, guid: 5288da9e14d004954a4d3ca42aca0582, type: 2}
       propertyPath: m_LocalPosition.x
       value: 2.82999992
@@ -31798,6 +31797,10 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: .354897588
       objectReference: {fileID: 0}
+    - target: {fileID: 11100000, guid: 5288da9e14d004954a4d3ca42aca0582, type: 2}
+      propertyPath: m_Animations.Array.data[8]
+      value: 
+      objectReference: {fileID: 7400014, guid: 4421e54f3e3c243b98854dd7f87d6758, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5288da9e14d004954a4d3ca42aca0582, type: 2}
   m_RootGameObject: {fileID: 1820558464}
@@ -36156,6 +36159,7 @@ Animation:
   - {fileID: 7400008, guid: 4421e54f3e3c243b98854dd7f87d6758, type: 3}
   - {fileID: 7400010, guid: 4421e54f3e3c243b98854dd7f87d6758, type: 3}
   - {fileID: 7400012, guid: 4421e54f3e3c243b98854dd7f87d6758, type: 3}
+  - {fileID: 7400014, guid: 4421e54f3e3c243b98854dd7f87d6758, type: 3}
   - {fileID: 7400014, guid: 4421e54f3e3c243b98854dd7f87d6758, type: 3}
   m_WrapMode: 0
   m_PlayAutomatically: 1

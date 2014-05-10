@@ -7,6 +7,12 @@ public class LandAccCS : LandScriptCS {
 	public float fTime = 1.0f;
 	
 	public override void hit(){
+		if (triggered) {
+			return;
+		}
+		if (hControllerScriptCS.isFlying ()) {
+			return;		
+		}
 		base.hit();
 		hControllerScriptCS.speedUP (fSpeed,fTime);
 	}

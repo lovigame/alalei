@@ -49,10 +49,16 @@ public class CheckPointsMainCS : MonoBehaviour {
 	private ControllerScriptCS hControllerScriptCS;
 	private PatchesRandomizerCS hPatchesRandomizerCS;
 	private ElementsGeneratorCS hElementsGeneratorCS;
-	
+
+	private float BossAngle = 0.0f;
+	private Vector3 BossDir;
+	private Vector2 Boss_MidPoint;
+	private float BossPercent = 0.0f;
 	private int PatchNumber = 0;
 
 	private Vector3 vNextStartPosition;
+
+
 	
 	void Start()
 	{
@@ -214,6 +220,38 @@ public class CheckPointsMainCS : MonoBehaviour {
 			
 		return (CurrentDistanceOnPath+CurrentForwardSpeed);
 	}
+
+
+	public float setBossNextMidPointandRotation(float CurrentDistanceOnPath, float CurrentForwardSpeed)
+	{
+		BossPercent = (CurrentDistanceOnPath+CurrentForwardSpeed)/fPathLength;
+		Vector3[] poss;
+		if (CurrentPercent >= 1.0) {//if the Player has crossed the current patch
+						float PreviousPathLength = fPathLength;
+			
+						CurrentDistanceOnPath = (CurrentDistanceOnPath + CurrentForwardSpeed) - PreviousPathLength;
+						CurrentDistanceOnPath = Mathf.Abs (CurrentDistanceOnPath);
+			
+					BossPercent = (CurrentDistanceOnPath + CurrentForwardSpeed) / fPathLength;
+			poss = NextCPPositions;
+			;
+				} else {
+			poss = CPPositions;
+				}
+		Vector3 MidPointVector3 = Interp (poss, BossPercent);
+		 
+		Boss_MidPoint.x = MidPointVector3.x;
+		Boss_MidPoint.y = MidPointVector3.z;
+		
+		Vector3 ForwardPointVector3 = Interp(poss,BossPercent+0.001f);
+		Vector3 BackPointVector3 = Interp(poss,BossPercent-0.001f);
+		BossDir = ForwardPointVector3 - BackPointVector3;
+		BossAngle = PosAngleofVector(BossDir);
+		if(BossAngle>180.0f)
+			BossAngle = BossAngle-360.0f;
+		
+		return (CurrentDistanceOnPath+CurrentForwardSpeed);
+	}
 	
 	/*
 	*	FUNCTION:	Calculate the rotation along y-axis based on the position.
@@ -241,6 +279,12 @@ public class CheckPointsMainCS : MonoBehaviour {
 	{
 		return CurrentAngle;
 	}
+
+	public float getBossAngle()
+	{
+		return BossAngle;
+	}
+
 	
 	/*
 	*	FUNCTION: Get the Vector3 position based on area covered on spline of current patch.
@@ -311,6 +355,16 @@ public class CheckPointsMainCS : MonoBehaviour {
 	*	INFO: This is used to position the player character in one of the three lanes.
 	*/
 	public Vector2 getCurrentMidPoint() { return Current_MidPoint; }
+
+	public Vector3 getBossDirection() { return BossDir; }
+	
+	/*
+	*	FUNCTION: Get the exact position under the spline.
+	*	USED BY: ControllerScript.calculateHorizontalPosition(...)
+	*	INFO: This is used to position the player character in one of the three lanes.
+	*/
+	public Vector2 getBossMidPoint() { return Boss_MidPoint; }
+
 	
 	/*
 	*	FUNCTION: Calculate the needed rotation based on spline direction.

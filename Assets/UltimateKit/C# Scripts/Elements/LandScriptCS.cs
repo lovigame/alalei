@@ -11,11 +11,11 @@ public class LandScriptCS : MonoBehaviour {
 
 	}
 
+
 	virtual public void hit(){
 
-		if (triggered) {
-			return;
-		}
+
+
 		triggered = true;
 
 

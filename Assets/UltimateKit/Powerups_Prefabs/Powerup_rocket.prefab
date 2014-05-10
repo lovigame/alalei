@@ -28,7 +28,7 @@ GameObject:
   - 4: {fileID: 400002}
   - 114: {fileID: 11400000}
   m_Layer: 0
-  m_Name: Powerup_roket
+  m_Name: Powerup_rocket
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee49e97eae3124556823183829b46de6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  powerupType: 3
+  powerupType: 2
   frequency: 10
   father: {fileID: 0}
 --- !u!136 &13600000

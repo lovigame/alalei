@@ -73,6 +73,7 @@ public class ControllerScriptCS : MonoBehaviour {
 	private RaycastHit hitInfo;	//whats under the player character
 	private bool bGroundhit = false;	//is that an object under the player character
 	private float fHorizontalDistance = 0.0f;	//calculate player's horizontal distance on path
+	private float fBossHorizontalDistance = 0.0f;
 	
 	private float fCurrentForwardSpeed = .5f;	//sets movement based on spline
 	private float fCurrentDistance = 0.0f;//distance between the start and current position during the run
@@ -109,6 +110,7 @@ public class ControllerScriptCS : MonoBehaviour {
 	//change these to adjust the jump height and displacement
 	private float fJumpPush = 185;			//force with which player pushes the ground on jump
 	private float fJumpAddPush = 0.0f;
+	private float fJumpMaxPush = 185;
 	private int getAccleration() { return 500; }	//accleration and deceleration on jump
 	
 	//the initial distance of the player character at launch
@@ -122,8 +124,28 @@ public class ControllerScriptCS : MonoBehaviour {
 	private float fSpeedRate = 1.0f;
 	private float fSpeedRestTime = 0.0f;
 
-	private float fFlyTime = 0.0f;
+	private bool bFlying = false;
+	private bool bFlyUp = false;
+	private bool bFlyDown = false;
+	private float fCurrentFlyVelocity = 0;
+	private float fFlyPush = 385;
 	private float fFlyHeight = 70.0f;
+
+	public GameObject[] bossPrefabs;
+	private bool bBattling = false;
+	private Transform tBoss;
+	public float fBossDistance = 200;
+	private float fBossHeight = 280;
+
+	public bool isBattling(){
+		return bBattling;
+	}
+
+	public void startBattle(float bossdistance){
+		bBattling = true;
+		fBossDistance = bossdistance;
+		tBoss = ((GameObject)(Instantiate (bossPrefabs[0]))).transform;
+	}
 	
 	public void toggleSwipeControls(bool state)
 	{
@@ -136,6 +158,7 @@ public class ControllerScriptCS : MonoBehaviour {
 	
 	void Start()
 	{
+
 		//script references
 		hPatchesRandomizerCS = (PatchesRandomizerCS)this.GetComponent(typeof(PatchesRandomizerCS));
 		hMissionsControllerCS = (MissionsControllerCS)this.GetComponent(typeof(MissionsControllerCS));
@@ -284,6 +307,9 @@ public class ControllerScriptCS : MonoBehaviour {
 	
 	void FixedUpdate()
 	{
+		if (!isBattling ()) {
+			startBattle (300);		
+		}
 		if (mecanimEnabled)//set position and rotation of the mesh to its original values
 		{
 			aPlayerMecAnim.transform.localPosition = v3DefaultPlayerAnimPosition;
@@ -337,14 +363,16 @@ public class ControllerScriptCS : MonoBehaviour {
 				aPlayerMecAnim.SetBool("RunAnim", false);//disable run animation
 				aPlayerMecAnim.SetBool("DuckAnim", false);//disable slide animation
 			}		
-			
 			fCurrentUpwardVelocity = fJumpPush + fJumpAddPush;
+			fJumpMaxPush = fCurrentUpwardVelocity;
 			fCurrentHeight = tPlayer.position.y;
 			fJumpAddPush = 0.0f;
 			
 			hMissionsControllerCS.incrementMissionCount(MissionsControllerCS.MissionTypes.Jump);//count jumps for mission script
 			hGlobalAchievementControllerCS.incrementAchievementCount(GlobalAchievementControllerCS.GlobalAchievementTypes.Jump);//count jumps for global achievements script
 		}
+
+
 			
 		//acclerate movement speed with time
 		if(fCurrentWalkSpeed<fEndingWalkSpeed)
@@ -417,15 +445,35 @@ public class ControllerScriptCS : MonoBehaviour {
 		fSpeedRestTime = time;
 	}
 
-	public void flyUP(float time)
+	public void flyUP()
 	{
-		fFlyTime = time;
+		Debug.Log ("fly1111");
+		bFlying = true;
+		bFlyUp = true;
+		bExecuteLand = true;
+		bInAir = true;
+		
+		fCurrentFlyVelocity = fFlyPush;
+		fCurrentHeight = tPlayer.position.y;
+	}
+
+	public void flyEnd()
+	{
+		Debug.Log ("flyend");
+		bFlying = false;
+		bFlyDown = true;
+	}
+
+	public bool isFlying()
+	{
+		return bFlying;
 	}
 
 	public void jumpUP(float force)
 	{
 		bJumpFlag = true;
 		fJumpAddPush = force;
+		Debug.Log ("f "+force);
 	}
 	
 	/*
@@ -434,17 +482,33 @@ public class ControllerScriptCS : MonoBehaviour {
 	*/
 	private void SetTransform()
 	{
-		fSpeedRestTime -= Time.deltaTime;
-		if (fSpeedRestTime <= 0.0f) {
-			fSpeedRestTime = 0.0f;
-			fSpeedRate = 1.0f;
-		}
+		if (fSpeedRestTime > 0.0f) {
+						fSpeedRestTime -= Time.deltaTime;
+						if (fSpeedRestTime <= 0.0f) {
+								fSpeedRestTime = 0.0f;
+								fSpeedRate = 1.0f;
+						}
+				}
+
+
 		int iStrafeDirection = (int)getLeftRightInput();	//get the current lane (-1, 0 or 1)
 		
 		fCurrentDistanceOnPath = hCheckPointsMainCS.SetNextMidPointandRotation(fCurrentDistanceOnPath, fCurrentForwardSpeed);//distance on current patch
 		fCurrentDistance = fCurrentDistanceOnPath + hPatchesRandomizerCS.getCoveredDistance();//total distance since the begining of the run
 		fCurrentMileage = fCurrentDistance/12.0f;//calculate milage to display score on HUD
-		
+
+		float fBossDistanceOnPath = 0;
+		float tBossAngle = 0;
+		Vector3 BossDirection = new Vector3(0,0,0);
+		Vector3 Desired_boss = new Vector3(0,0,0);
+
+		if (isBattling ()) {
+						fBossDistanceOnPath = hCheckPointsMainCS.setBossNextMidPointandRotation (fCurrentDistanceOnPath + fBossDistance, fCurrentForwardSpeed);
+						tBossAngle = hCheckPointsMainCS.getBossAngle ();
+						BossDirection = hCheckPointsMainCS.getBossDirection ();
+						Desired_boss = calculateBossHorizontalPosition (iStrafeDirection, BossDirection);
+				}
+
 		tCurrentAngle = hCheckPointsMainCS.getCurrentAngle();//get the angle according to the position on path
 		//set player rotation according to the current player position on the path's curve (if any)
 		tPlayerRotation.localEulerAngles = new Vector3(tPlayerRotation.localEulerAngles.x, -tCurrentAngle, tPlayerRotation.localEulerAngles.z);
@@ -498,14 +562,30 @@ public class ControllerScriptCS : MonoBehaviour {
 			}
 			else			//JUMP
 			{
-				setCurrentJumpHeight();
+				if(isFlying ()){
+					setCurrentFlyHeight();
+				}
+				else{
+					setCurrentJumpHeight();
+				}
+
 				tPlayer.position = new Vector3(tPlayer.position.x,
 					fCurrentHeight, tPlayer.position.z);				
 			}
 		}
-		
-		tPlayer.position = new Vector3(Desired_Horinzontal_Pos.x,
-			tPlayer.position.y,	Desired_Horinzontal_Pos.z);//set player position in x and z axis
+
+		//if (isFlying ()) {
+		//	tPlayer.position = new Vector3 (Desired_Horinzontal_Pos.x,
+			//                                tPlayer.position.y+fFlyHeight, Desired_Horinzontal_Pos.z);
+			//	} else {
+						tPlayer.position = new Vector3 (Desired_Horinzontal_Pos.x,
+			tPlayer.position.y, Desired_Horinzontal_Pos.z);//set player position in x and z axis
+			//	}
+
+		if (isBattling ()) {
+			tBoss.position = Desired_boss;	
+			tBoss.localEulerAngles = new Vector3(tPlayerRotation.localEulerAngles.x, -tBossAngle, tPlayerRotation.localEulerAngles.z);
+		}
 		
 	}//end of Set Transform()
 	
@@ -516,7 +596,7 @@ public class ControllerScriptCS : MonoBehaviour {
 	private void setCurrentJumpHeight()		//set height during jump
 	{
 		fCurrentUpwardVelocity-=Time.fixedDeltaTime*getAccleration();
-		fCurrentUpwardVelocity = Mathf.Clamp(fCurrentUpwardVelocity,-fJumpPush,fJumpPush);
+		fCurrentUpwardVelocity = Mathf.Clamp(fCurrentUpwardVelocity,-fJumpMaxPush,fJumpMaxPush);
 		fCurrentHeight+=fCurrentUpwardVelocity*(Time.fixedDeltaTime/1.4f);
 		
 		if(fCurrentHeight<fContactPointY)
@@ -525,9 +605,48 @@ public class ControllerScriptCS : MonoBehaviour {
 			bInAir = false;
 			bInJump = false;
 			
-			if (bDiveFlag)	//do not resume run animation on Dive
+			if (bDiveFlag)	//do not resume run animatsion on Dive
 				return;
 					
+			if (!hInGameScriptCS.isEnergyZero())
+			{	
+				if (!mecanimEnabled)
+					aPlayer.CrossFade("run", 0.1f);
+				else
+				{
+					aPlayerMecAnim.SetBool("JumpAnim", false);
+					aPlayerMecAnim.SetBool("RunAnim", true);
+				}
+			}//end of if current energy > 0
+		}
+	}
+
+	private void setCurrentFlyHeight()		//set height during jump
+	{
+		if (!bFlyUp && !bFlyDown) {
+			return;
+		}
+		float old = fCurrentFlyVelocity;
+		fCurrentFlyVelocity-=Time.fixedDeltaTime*getAccleration();
+		fCurrentFlyVelocity = Mathf.Clamp(fCurrentFlyVelocity,-fFlyPush,fFlyPush);
+		fCurrentHeight+=fCurrentFlyVelocity*(Time.fixedDeltaTime/1.4f);
+
+		if (bFlyUp && old > 0 && fCurrentFlyVelocity < 0) {
+			fCurrentHeight = fFlyHeight;//(Time.fixedDeltaTime*getAccleration() + fCurrentFlyVelocity)*(Time.fixedDeltaTime/1.4f);
+			//fCurrentFlyVelocity = 0;
+			bFlyUp = false;
+		}
+
+
+		if(bFlyDown && fCurrentHeight<fContactPointY)
+		{
+			fCurrentHeight = fContactPointY;
+			bInAir = false;
+			bFlyDown = false;
+			
+			if (bDiveFlag)	//do not resume run animation on Dive
+				return;
+			
 			if (!hInGameScriptCS.isEnergyZero())
 			{	
 				if (!mecanimEnabled)
@@ -722,6 +841,10 @@ public class ControllerScriptCS : MonoBehaviour {
 		else
 			fCurrentForwardSpeed = Mathf.Lerp(fCurrentForwardSpeed,(getCurrentWalkSpeed())*Time.fixedDeltaTime,Time.fixedDeltaTime*fForwardAccleration);
 	}
+
+	public Vector3 getPositionRelativePlayer(Vector3 pos,int lane){
+		return new Vector3 (0,0,0);
+	}
 	
 	/*
 	*	FUNCTION: Make the player change lanes
@@ -801,6 +924,84 @@ public class ControllerScriptCS : MonoBehaviour {
 			fHorizontalDistance = Mathf.Clamp(fHorizontalDistance,-20.0f,20.0f);		
 			fHorizontalPoint = hCheckPointsMainCS.getCurrentMidPoint() + SideDirection_Vector2*fHorizontalDistance;
 					
+			return new Vector3(fHorizontalPoint.x,tPlayerRotation.position.y,fHorizontalPoint.y);
+		}//end of else
+	}
+
+	private float fBossStrafePosition = 0.0f;	//keeps track of strafe position at each frame
+	private float fBossSpeedMultiplier = 5.0f;	//how fast to strafe/ change lane
+	private Vector3 calculateBossHorizontalPosition(int iStrafeDirection,Vector3 BossDirection)
+	{
+		Vector2 fHorizontalPoint;
+		Vector2 SideDirection_Vector2;
+		
+		if (swipeControlsEnabled == true)
+		{
+			SideDirection_Vector2 = rotateAlongZAxis(new Vector2(BossDirection.x,BossDirection.z),90.0f);
+			SideDirection_Vector2.Normalize();
+			
+			if(iStrafeDirection==-1)//strafe left from center
+			{
+				if(fBossStrafePosition>-1)
+				{
+					fBossStrafePosition-= fBossSpeedMultiplier*Time.fixedDeltaTime;
+					if(fBossStrafePosition<=-1.0f)
+					{
+						fBossStrafePosition = -1.0f;
+						//switchStrafeToSprint();
+					}
+				}
+			}
+			else if(iStrafeDirection==1)//strafe right from center
+			{
+				if(fBossStrafePosition<1)
+				{
+					fBossStrafePosition+= fBossSpeedMultiplier*Time.fixedDeltaTime;
+					if(fBossStrafePosition>=1.0f)
+					{
+						fBossStrafePosition = 1.0f;
+						//switchStrafeToSprint();
+					}
+				}
+			}
+			else if(iStrafeDirection==0&&fBossStrafePosition!=0.0f)//strafe from left or right lane to center
+			{	
+				if(fBossStrafePosition<0)
+				{
+					fBossStrafePosition+= fBossSpeedMultiplier*Time.fixedDeltaTime;
+					if(fBossStrafePosition>=0.0f)
+					{
+						fBossStrafePosition = 0.0f;
+						//switchStrafeToSprint();
+					}
+				}
+				else if(fBossStrafePosition>0)
+				{
+					fBossStrafePosition-= fBossSpeedMultiplier*Time.fixedDeltaTime;
+					if(fBossStrafePosition<=0.0f)
+					{
+						fBossStrafePosition = 0.0f;
+						//switchStrafeToSprint();
+					}
+				}
+			}//end of else
+			
+			fBossHorizontalDistance = -fBossStrafePosition*16.0f;	
+			fBossHorizontalDistance = Mathf.Clamp(fBossHorizontalDistance,-20.0f,20.0f);
+			
+			fHorizontalPoint = hCheckPointsMainCS.getBossMidPoint() + SideDirection_Vector2*fBossHorizontalDistance;
+			
+			return new Vector3(fHorizontalPoint.x,tPlayerRotation.position.y,fHorizontalPoint.y);
+		}
+		else
+		{
+			SideDirection_Vector2 = rotateAlongZAxis(new Vector2(BossDirection.x,BossDirection.z),90.0f);
+			SideDirection_Vector2.Normalize();
+			
+			fBossHorizontalDistance = Mathf.Lerp(fBossHorizontalDistance,-iStrafeDirection * 40.0f, 0.05f*fCurrentForwardSpeed);		
+			fBossHorizontalDistance = Mathf.Clamp(fBossHorizontalDistance,-20.0f,20.0f);		
+			fHorizontalPoint = hCheckPointsMainCS.getBossMidPoint() + SideDirection_Vector2*fBossHorizontalDistance;
+			
 			return new Vector3(fHorizontalPoint.x,tPlayerRotation.position.y,fHorizontalPoint.y);
 		}//end of else
 	}
@@ -891,6 +1092,7 @@ public class ControllerScriptCS : MonoBehaviour {
 			
 			if (direction == SwipeControlsCS.SwipeDirection.Jump)	//JUMP
 			{
+				if(!isFlying()){
 				if(!bInAir)
 				{					
 					bJumpFlag = true;
@@ -899,6 +1101,7 @@ public class ControllerScriptCS : MonoBehaviour {
 				{
 					bDirectionQueueFlag = true;
 					directionQueue = SwipeControlsCS.SwipeDirection.Jump;
+				}
 				}
 			}//end of if direction is jump
 			if (direction == SwipeControlsCS.SwipeDirection.Right && swipeControlsEnabled == true)	//RIGHT swipe
@@ -925,16 +1128,22 @@ public class ControllerScriptCS : MonoBehaviour {
 			}//end of swipe direction if
 			if (direction == SwipeControlsCS.SwipeDirection.Duck && bInDuck)//SLIDE: queue the second duck command if player is in the middle of slide animation
 			{
+				if(!isFlying()){
 				bDirectionQueueFlag = true;
 				directionQueue = SwipeControlsCS.SwipeDirection.Duck;
+				}
 			}
 			if (direction == SwipeControlsCS.SwipeDirection.Duck && !bInAir && !bInDuck)//SLIDE: on ground
 			{
+				if(!isFlying()){
 				duckPlayer();
+				}
 			}
 			if (direction == SwipeControlsCS.SwipeDirection.Duck && bInAir && !bInDuck)//SLIDE/ DIVE: in air
 			{				
+				if(!isFlying()){
 				bDiveFlag = true;	//used by Set Transform() to make the character dive
+				}
 			}//end of slide in air if
 			
 			//swipeLogic.iTouchStateFlag = 2;
@@ -947,6 +1156,7 @@ public class ControllerScriptCS : MonoBehaviour {
 		//keyboard controls (DEBUG)
 		if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))//Up/ jump
 		{
+			if(!isFlying()){
 			if(!bInAir)
 			{					
 				bJumpFlag = true;
@@ -955,6 +1165,7 @@ public class ControllerScriptCS : MonoBehaviour {
 			{
 				bDirectionQueueFlag = true;
 				directionQueue = SwipeControlsCS.SwipeDirection.Jump;
+			}
 			}
 		}
 		else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))//Right
@@ -981,16 +1192,22 @@ public class ControllerScriptCS : MonoBehaviour {
 		}
 		else if ( (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) && bInDuck)
 		{
+			if(!isFlying()){
 			bDirectionQueueFlag = true;
 			directionQueue = SwipeControlsCS.SwipeDirection.Duck;
+			}
 		}
 		else if ((Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) && !bInAir && !bInDuck)
 		{
+			if(!isFlying()){
 			duckPlayer();
+			}
 		}
 		else if ((Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) && bInAir && !bInDuck)
 		{
+			if(!isFlying()){
 			bDiveFlag = true;	//used by Set Transform() to make the character dive
+			}
 		}
 		
 	}//end of Movement Control function
