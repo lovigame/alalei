@@ -730,7 +730,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &100086
 GameObject:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -741,22 +741,7 @@ GameObject:
   - 23: {fileID: 2300050}
   - 114: {fileID: 11400044}
   m_Layer: 15
-  m_Name: Cube
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &100088
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400088}
-  m_Layer: 0
-  m_Name: Land_Jump
+  m_Name: Land_j
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -844,7 +829,7 @@ Transform:
   - {fileID: 400004}
   - {fileID: 400076}
   - {fileID: 400084}
-  - {fileID: 400088}
+  - {fileID: 400086}
   - {fileID: 400082}
   - {fileID: 400032}
   - {fileID: 400092}
@@ -1320,21 +1305,9 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100086}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 174.989563, y: 0, z: -38.4540405}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_Children: []
-  m_Father: {fileID: 400088}
---- !u!4 &400088
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100088}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 189.727295, y: 0, z: -37.5901794}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 400086}
   m_Father: {fileID: 400006}
 --- !u!4 &400090
 Transform:
@@ -2667,7 +2640,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggered: 0
   hControllerScriptCS: {fileID: 0}
-  fJumpHeight: 200
+  fJumpHeight: 300
 --- !u!114 &11400046
 MonoBehaviour:
   m_ObjectHideFlags: 1

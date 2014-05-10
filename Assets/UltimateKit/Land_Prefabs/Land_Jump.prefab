@@ -110,7 +110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggered: 0
   hControllerScriptCS: {fileID: 0}
-  fJumpHeight: 200
+  fJumpHeight: 300
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

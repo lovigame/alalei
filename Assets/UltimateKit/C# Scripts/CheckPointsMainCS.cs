@@ -224,6 +224,10 @@ public class CheckPointsMainCS : MonoBehaviour {
 
 	public float setBossNextMidPointandRotation(float CurrentDistanceOnPath, float CurrentForwardSpeed)
 	{
+
+
+
+		Vector3 pos;
 		BossPercent = (CurrentDistanceOnPath+CurrentForwardSpeed)/fPathLength;
 		Vector3[] poss;
 		if (CurrentPercent >= 1.0) {//if the Player has crossed the current patch
@@ -235,10 +239,13 @@ public class CheckPointsMainCS : MonoBehaviour {
 					BossPercent = (CurrentDistanceOnPath + CurrentForwardSpeed) / fPathLength;
 			poss = NextCPPositions;
 			;
+			pos = getCurrentWSPointBasedOnPercent(BossPercent);
 				} else {
 			poss = CPPositions;
+			pos = getNextWSPointBasedOnPercent(BossPercent);
 				}
 		Vector3 MidPointVector3 = Interp (poss, BossPercent);
+		MidPointVector3 = pos;
 		 
 		Boss_MidPoint.x = MidPointVector3.x;
 		Boss_MidPoint.y = MidPointVector3.z;

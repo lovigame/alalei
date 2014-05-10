@@ -308,7 +308,7 @@ public class ControllerScriptCS : MonoBehaviour {
 	void FixedUpdate()
 	{
 		if (!isBattling ()) {
-			startBattle (300);		
+			startBattle (50);		
 		}
 		if (mecanimEnabled)//set position and rotation of the mesh to its original values
 		{
@@ -504,9 +504,9 @@ public class ControllerScriptCS : MonoBehaviour {
 
 		if (isBattling ()) {
 						fBossDistanceOnPath = hCheckPointsMainCS.setBossNextMidPointandRotation (fCurrentDistanceOnPath + fBossDistance, fCurrentForwardSpeed);
-						tBossAngle = hCheckPointsMainCS.getBossAngle ();
+						tBossAngle = hCheckPointsMainCS.getBossAngle ()-90;
 						BossDirection = hCheckPointsMainCS.getBossDirection ();
-						Desired_boss = calculateBossHorizontalPosition (iStrafeDirection, BossDirection);
+						Desired_boss = calculateBossHorizontalPosition (0, BossDirection);
 				}
 
 		tCurrentAngle = hCheckPointsMainCS.getCurrentAngle();//get the angle according to the position on path
@@ -583,7 +583,9 @@ public class ControllerScriptCS : MonoBehaviour {
 			//	}
 
 		if (isBattling ()) {
-			tBoss.position = Desired_boss;	
+		
+
+			tBoss.position = new Vector3(Desired_boss.x,30,Desired_boss.z);	
 			tBoss.localEulerAngles = new Vector3(tPlayerRotation.localEulerAngles.x, -tBossAngle, tPlayerRotation.localEulerAngles.z);
 		}
 		

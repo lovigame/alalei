@@ -12,7 +12,6 @@ public class LandJumpCS : LandScriptCS {
 			return;		
 		}
 		base.hit();
-		Debug.Log ("f"+fJumpHeight);
 		hControllerScriptCS.jumpUP (fJumpHeight);
 	}
 }
