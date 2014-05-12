@@ -230,6 +230,8 @@ public class CheckPointsMainCS : MonoBehaviour {
 		Vector3 pos;
 		BossPercent = (CurrentDistanceOnPath+CurrentForwardSpeed)/fPathLength;
 		Vector3[] poss;
+		Vector3 ForwardPointVector3;
+		Vector3 BackPointVector3;
 		if (CurrentPercent >= 1.0) {//if the Player has crossed the current patch
 						float PreviousPathLength = fPathLength;
 			
@@ -240,18 +242,20 @@ public class CheckPointsMainCS : MonoBehaviour {
 			poss = NextCPPositions;
 			;
 			pos = getCurrentWSPointBasedOnPercent(BossPercent);
+			ForwardPointVector3 = getCurrentWSPointBasedOnPercent(BossPercent+0.001f);
+			BackPointVector3 = getCurrentWSPointBasedOnPercent(BossPercent-0.001f);
 				} else {
 			poss = CPPositions;
 			pos = getNextWSPointBasedOnPercent(BossPercent);
+			ForwardPointVector3 = getNextWSPointBasedOnPercent(BossPercent+0.001f);
+			BackPointVector3 = getNextWSPointBasedOnPercent(BossPercent-0.001f);
 				}
 		Vector3 MidPointVector3 = Interp (poss, BossPercent);
 		MidPointVector3 = pos;
 		 
 		Boss_MidPoint.x = MidPointVector3.x;
 		Boss_MidPoint.y = MidPointVector3.z;
-		
-		Vector3 ForwardPointVector3 = Interp(poss,BossPercent+0.001f);
-		Vector3 BackPointVector3 = Interp(poss,BossPercent-0.001f);
+
 		BossDir = ForwardPointVector3 - BackPointVector3;
 		BossAngle = PosAngleofVector(BossDir);
 		if(BossAngle>180.0f)
