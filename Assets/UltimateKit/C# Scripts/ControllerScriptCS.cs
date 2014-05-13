@@ -141,6 +141,10 @@ public class ControllerScriptCS : MonoBehaviour {
 		return bBattling;
 	}
 
+	public Transform getBoss(){
+		return tBoss;
+	}
+
 	public void startBattle(float bossdistance){
 		bBattling = true;
 		fBossDistance = bossdistance;
@@ -525,6 +529,14 @@ public class ControllerScriptCS : MonoBehaviour {
 			
 				if(_ls != null){
 					_ls.hit();
+				}
+			}
+
+			if( Physics.Linecast(Desired_Horinzontal_Pos + new Vector3(0,20,0),Desired_Horinzontal_Pos + new Vector3(0,-100,0), out hit,(1<<LayerMask.NameToLayer("Bomb_lyr")))){
+				BombCS _ls = (BombCS)(hit.transform.GetComponent(typeof(BombCS)));
+				
+				if(_ls != null){
+					_ls.boom();
 				}
 			}
 						fContactPointY = hitInfo.point.y;

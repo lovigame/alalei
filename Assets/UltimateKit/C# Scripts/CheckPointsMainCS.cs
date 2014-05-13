@@ -43,6 +43,7 @@ public class CheckPointsMainCS : MonoBehaviour {
 	private GameObject goNextCPsGroup;
 	private Transform tCPsGroup;
 	private Transform tNextCPsGroup;
+	private GameObject bosspatch;
 	
 	//script references
 	private InGameScriptCS hInGameScriptCS;
@@ -221,6 +222,9 @@ public class CheckPointsMainCS : MonoBehaviour {
 		return (CurrentDistanceOnPath+CurrentForwardSpeed);
 	}
 
+	public GameObject getBossPatch(){
+		return bosspatch;
+	}
 
 	public float setBossNextMidPointandRotation(float CurrentDistanceOnPath, float CurrentForwardSpeed)
 	{
@@ -244,11 +248,13 @@ public class CheckPointsMainCS : MonoBehaviour {
 			pos = getCurrentWSPointBasedOnPercent(BossPercent);
 			ForwardPointVector3 = getCurrentWSPointBasedOnPercent(BossPercent+0.001f);
 			BackPointVector3 = getCurrentWSPointBasedOnPercent(BossPercent-0.001f);
+			bosspatch = hPatchesRandomizerCS.getCurrentPatch();
 				} else {
 			poss = CPPositions;
 			pos = getNextWSPointBasedOnPercent(BossPercent);
 			ForwardPointVector3 = getNextWSPointBasedOnPercent(BossPercent+0.001f);
 			BackPointVector3 = getNextWSPointBasedOnPercent(BossPercent-0.001f);
+			bosspatch = hPatchesRandomizerCS.getNextPatch();
 				}
 		Vector3 MidPointVector3 = Interp (poss, BossPercent);
 		MidPointVector3 = pos;
