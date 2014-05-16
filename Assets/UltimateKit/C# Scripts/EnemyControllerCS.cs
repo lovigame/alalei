@@ -58,17 +58,30 @@ public class EnemyControllerCS : MonoBehaviour {
 			return;
 			
 		//set the position of guard in current frame		
+		/*
 		tEnemy.position = new Vector3(Mathf.Lerp(tEnemy.position.x, (tPlayer.position.x - fEnemyPosition), Time.deltaTime*10), 
 			tEnemy.position.y, tEnemy.position.z);
+			*/
+
+		Matrix4x4 mat = new Matrix4x4 ();
+		
+		mat.SetTRS (new Vector3(0,0,0),Quaternion.Euler(   new Vector3(0,-hControllerScriptCS.getCurrentPlayerRotation(),0)),new Vector3(1,1,1));
+		Vector3 pos = mat.MultiplyVector(new Vector3( -fEnemyPosition, 0, 0));
+		tEnemy.position = new Vector3(Mathf.Lerp(tEnemy.position.x, (tPlayer.position.x - pos.x), Time.deltaTime*10), 
+		                              Mathf.Lerp(tEnemy.position.y, (tPlayer.position.y - pos.y), Time.deltaTime*10), 
+		                              Mathf.Lerp(tEnemy.position.z, (tPlayer.position.z - pos.z), Time.deltaTime*10));
 			
-		if (!hControllerScriptCS.isInAir())//follow the player in y-axis if he's not jumping (cars cant jump)
-			tEnemy.position = new Vector3(tEnemy.position.x, Mathf.Lerp(tEnemy.position.y, tPlayer.position.y + fEnemyPositionY, Time.deltaTime*8),
+		if (!hControllerScriptCS.isInAir ()) {//follow the player in y-axis if he's not jumping (cars cant jump)
+						tEnemy.position = new Vector3 (tEnemy.position.x, Mathf.Lerp (tEnemy.position.y, tPlayer.position.y + fEnemyPositionY, Time.deltaTime * 8),
 				tEnemy.position.z);			
+				}
 		
 		//ignore y-axis rotation and horizontal movement in idle and death state
 		if (iEnemyState < 4)
 		{
-			tEnemy.position = new Vector3(tEnemy.position.x, tEnemy.position.y,	Mathf.Lerp(tEnemy.position.z, tPlayer.position.z, Time.deltaTime*10));
+		//	Vector3 pos = mat.MultiplyVector(new Vector3( 0, 0, 0));
+
+			//tEnemy.position = new Vector3(tEnemy.position.x, tEnemy.position.y,	Mathf.Lerp(tEnemy.position.z, tPlayer.position.z, Time.deltaTime*10));
 			tEnemy.localEulerAngles = new Vector3(tEnemy.localEulerAngles.x,-hControllerScriptCS.getCurrentPlayerRotation(), tEnemy.localEulerAngles.z);
 		}
 		
@@ -108,7 +121,7 @@ public class EnemyControllerCS : MonoBehaviour {
 		else if (iEnemyState == 4)//on death
 		{	
 			//to ensure correct rotation animation
-			tEnemy.localEulerAngles = new Vector3(tEnemy.localEulerAngles.x, 350, tEnemy.localEulerAngles.z);
+			tEnemy.localEulerAngles = new Vector3(tEnemy.localEulerAngles.x, 350-hControllerScriptCS.getCurrentPlayerRotation(), tEnemy.localEulerAngles.z);
 			
 			hSoundManagerCS.playSound(SoundManagerCS.EnemySounds.TiresSqueal);
 			iEnemyState = 5;
@@ -116,10 +129,10 @@ public class EnemyControllerCS : MonoBehaviour {
 		else if (iEnemyState == 5)//pin behind the player
 		{
 			fEnemyPosition = Mathf.Lerp(fEnemyPosition, fEnemyPositionX+20, Time.fixedDeltaTime*50);//vertical position after skid
-			tEnemy.position = new Vector3(tEnemy.position.x, tEnemy.position.y,
-				Mathf.Lerp(tEnemy.position.z, tPlayer.position.z + 20, Time.deltaTime*10));//horizontal position after skid
+		//	tEnemy.position = new Vector3(tEnemy.position.x, tEnemy.position.y,
+		//		Mathf.Lerp(tEnemy.position.z, tPlayer.position.z + 20, Time.deltaTime*10));//horizontal position after skid
 						
-			tEnemy.localEulerAngles = Vector3.Lerp(tEnemy.localEulerAngles, new Vector3(0,260,0), Time.deltaTime*10);//90 degree rotation
+			tEnemy.localEulerAngles = Vector3.Lerp(tEnemy.localEulerAngles, new Vector3(0,260-hControllerScriptCS.getCurrentPlayerRotation(),0), Time.deltaTime*10);//90 degree rotation
 			if (tEnemy.localEulerAngles.y <= 261)
 				iEnemyState = 6;
 		}

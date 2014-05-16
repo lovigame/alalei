@@ -8,6 +8,7 @@
 */
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PatchesRandomizerCS : MonoBehaviour {
 
@@ -106,7 +107,11 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		goNextPatch = (GameObject)Instantiate((GameObject)patchesPrefabs[UnityEngine.Random.Range(0,patchesPrefabs.Length)], new Vector3(0,0,0), new Quaternion());
 		//relocateCP (goNextPatch,new Vector3(fTotalPath+getPatchSize(goCurrentPatch),0,-getCPStartPosition(goCurrentPatch).z-getCPStartPosition(goNextPatch).z+getCPFinishPosition(goCurrentPatch).z));
 		connectPatch (goCurrentPatch,goNextPatch);
+
+		//initSubMove (goNextPatch,goCurrentPatch);
 	}
+
+
 	
 	/*
 	*	FUNCTION: Instantiate the first patch on start of the game.
@@ -117,12 +122,14 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		goCurrentPatch = (GameObject)Instantiate((GameObject)patchesPrefabs[UnityEngine.Random.Range(0,patchesPrefabs.Length)], new Vector3(0,0,0), new Quaternion());
 		relocateCP (goCurrentPatch,new Vector3(0,0,-getCPStartPosition(goCurrentPatch).z));
 		fTotalPath += getPatchSize (goCurrentPatch);
+		//initSubMove (goCurrentPatch,goCurrentPatch);
 
 		//goNextPatch = (GameObject)Instantiate((GameObject)patchesPrefabs[UnityEngine.Random.Range(0,patchesPrefabs.Length)], new Vector3(fPatchDistance,0,0), new Quaternion());
 		goNextPatch = (GameObject)Instantiate((GameObject)patchesPrefabs[UnityEngine.Random.Range(0,patchesPrefabs.Length)], new Vector3(0,0,0), new Quaternion());
 		//relocateCP (goNextPatch,new Vector3(getPatchSize(goCurrentPatch),0,-getCPStartPosition(goCurrentPatch).z-getCPStartPosition(goNextPatch).z+getCPFinishPosition(goCurrentPatch).z));
 		//fTotalPath += getPatchSize (goNextPatch);
 		connectPatch (goCurrentPatch,goNextPatch);
+		//initSubMove (goNextPatch,goCurrentPatch);
 
 		//goNextPatch2 = (GameObject)Instantiate((GameObject)patchesPrefabs[UnityEngine.Random.Range(0,patchesPrefabs.Length)], new Vector3(0,0,0), new Quaternion());
 	//	connectPatch (goNextPatch,goNextPatch2);

@@ -269,6 +269,26 @@ public class CheckPointsMainCS : MonoBehaviour {
 		
 		return (CurrentDistanceOnPath+CurrentForwardSpeed);
 	}
+
+	public float getCurrentAngle(float percent){
+		Vector3 ForwardPointVector3 = getCurrentWSPointBasedOnPercent(percent+0.001f);
+		Vector3 BackPointVector3 = getCurrentWSPointBasedOnPercent(percent-0.001f);
+		Vector3 dir = ForwardPointVector3 - BackPointVector3;
+		float angle = PosAngleofVector(dir) + hPatchesRandomizerCS.getCurrentPatch().transform.eulerAngles.y;
+		if(angle>180.0f)
+			angle = angle-360.0f;
+		return angle ;
+	}
+
+	public float getNextAngle(float percent){
+		Vector3 ForwardPointVector3 = getNextWSPointBasedOnPercent(percent+0.001f);
+		Vector3 BackPointVector3 = getNextWSPointBasedOnPercent(percent-0.001f);
+		Vector3 dir = ForwardPointVector3 - BackPointVector3;
+		float angle = PosAngleofVector(dir) + hPatchesRandomizerCS.getNextPatch().transform.eulerAngles.y;
+		if(angle>180.0f)
+			angle = angle-360.0f;
+		return angle;
+	}
 	
 	/*
 	*	FUNCTION:	Calculate the rotation along y-axis based on the position.

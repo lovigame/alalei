@@ -32,7 +32,7 @@ public class CameraControllerCS : MonoBehaviour {
 	private float fCameraRotationX = 0.0f;	//camera x rotation
 	private float fCameraRotationZ = 0.0f;	//camera z rotation
 	private float fCameraPositionY = 35;	//camera Y position
-	private float fCameraPositionX = -10;	//camera X position
+	private float fCameraPositionX = -30;	//camera X position
 	
 	private int iCameraState = 0;	//camera state
 	private float fCamShakeImpulse = 0.0f;	//Camera Shake Impulse
@@ -91,9 +91,26 @@ public class CameraControllerCS : MonoBehaviour {
 		if (iCameraState == 1)	//regular gameplay
 		{
 			fCameraLerpValue = 35;//maintain a static distance between camera and the player
+
+			Matrix4x4 mat = new Matrix4x4 ();
+
+			mat.SetTRS (new Vector3(0,0,0),Quaternion.Euler(   new Vector3(0,-hControllerScriptCS.getCurrentPlayerRotation(),0)),new Vector3(1,1,1));
+			Vector3 pos = mat.MultiplyVector(new Vector3( fCameraPositionX, fCameraPositionY, 0));
+
+			tCamera.position = new Vector3( tPlayerMesh.position.x + pos.x,tPlayerMesh.position.y + pos.y,tPlayerMesh.position.z + pos.z );
+
+
+			/*
+			tCamera.position = new Vector3( tPlayerMesh.position.x + pos.x,
+			                               Mathf.Lerp(tCamera.position.y,tPlayerMesh.position.y + pos.y, 1),
+			                               Mathf.Lerp(tCamera.position.z,tPlayerMesh.position.z + pos.z, 1) );*/
+
+			/*
 			tCamera.position = new Vector3( tPlayerMesh.position.x + v3CamDirection.x*fCameraDistance + fCameraPositionX,
 				Mathf.Lerp(tCamera.position.y, tPlayerMesh.position.y + fCameraPositionY, Time.deltaTime*70),
 				Mathf.Lerp(tCamera.position.z, (tPlayerMesh.position.z + v3CamDirection.z*fCameraDistance), Time.deltaTime*50) );
+				*/
+
 		}	
 		else if(iCameraState == 2)	//Camera on death 
 		{		

@@ -11,6 +11,7 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PathLineDrawerCS : MonoBehaviour {
 
@@ -21,6 +22,10 @@ public class PathLineDrawerCS : MonoBehaviour {
 	public float fWidth = 0.0f;
 	public float fHeight = 0.0f;
 	public Vector3 pos;
+
+	private MoveForwardCS[] hMove;
+	private float[] fLength;
+	private float[] fDist;
 
 	public enum EN_PATHOUT{
 		PATHOUT_RIGHT = 0,
@@ -56,10 +61,33 @@ public class PathLineDrawerCS : MonoBehaviour {
 	{	
 		SetCurrentPatchCPs();	
 	}
+
+	public void foreach_gettype(Transform tran,List<MoveForwardCS> moveObjs){
+
+		MoveForwardCS obj = (MoveForwardCS)tran.gameObject.GetComponent (typeof(MoveForwardCS));
+		if (obj != null) {
+			moveObjs.Add(obj);		
+		}
+
+		foreach (Transform child in tran) {
+			foreach_gettype(child,moveObjs);
+		}
+
+
+	}
 		
 	private void SetCurrentPatchCPs()
 	{
 		int i = 0;
+		List<MoveForwardCS> moveObjs = new List<MoveForwardCS>();
+		foreach_gettype (transform.parent,moveObjs);
+		hMove = moveObjs.ToArray ();
+
+		fLength = new float[hMove.Length];
+		fDist = new float[hMove.Length];
+		for(int j=0;j<fDist.Length;++j){
+			fDist[j] = 9999999;
+		}
 		
 		Vector3[] tempCPPositions;
 		Transform[] AllCPs;		
@@ -116,6 +144,13 @@ public class PathLineDrawerCS : MonoBehaviour {
 		Parameterized_CPPositions = PathControlPointGenerator(tempCPPositions);
 		Parameterized_CPPositions = ParameterizeCPs(Parameterized_CPPositions);
 		fPathLength = PathLength(Parameterized_CPPositions);
+
+		for(int j=0;j<hMove.Length;++j){
+			hMove[j].fPercent = fLength[j]/fPathLength;
+			if(hMove[j].fPercent > 1f){
+				Debug.LogError("error move percent "+hMove[j].fPercent + " len:"+fLength[j]+" total:"+fPathLength);
+			}
+		}
 	}
 	
 	private Vector3[] ParameterizeCPs(Vector3[] pts)
@@ -123,7 +158,7 @@ public class PathLineDrawerCS : MonoBehaviour {
 		float i = 0.0f;
 		float Current_TD = 0.0f;	 //Current total distance
 		float TotalPathLength = PathLength(pts);
-		
+		float currentLength = 0.0f;
 		float CP_Increment = TotalPathLength/50.0f;
 		Vector3 PreviousPoint = pts[1];
 		Vector3 CurrentPoint = PreviousPoint;
@@ -131,21 +166,30 @@ public class PathLineDrawerCS : MonoBehaviour {
 		int Index = 0;
 		FinalPoints[Index] = pts[1];
 		Index++;
-
+		float dist = 0f;
 		for(i=0.0f;i<=1.0f;i+=0.000001f)
 		{
 			CurrentPoint = Interp(pts,i);
 			Current_TD+=Vector3.Distance(CurrentPoint,PreviousPoint);
+			currentLength += Current_TD;
 			if(Current_TD>=CP_Increment)
 			{
 				FinalPoints[Index] = CurrentPoint;
-				
 				Current_TD = 0;
 				Index++;
 			}
 			PreviousPoint = CurrentPoint;
+
+			for(int j=0;j<hMove.Length;++j){
+				dist = Vector3.Distance( hMove[j].transform.position , CurrentPoint);
+				if(dist < fDist[j]){
+					fDist[j] = dist;
+					fLength[j] = i*TotalPathLength;
+					
+				}
+				
+			}
 		}
-		
 		FinalPoints[50] = pts[pts.Length-2];
 		FinalPoints = PathControlPointGenerator(FinalPoints);		
 		return FinalPoints;

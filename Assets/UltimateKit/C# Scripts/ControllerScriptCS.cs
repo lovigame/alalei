@@ -527,7 +527,7 @@ public class ControllerScriptCS : MonoBehaviour {
 			if( Physics.Linecast(Desired_Horinzontal_Pos + new Vector3(0,20,0),Desired_Horinzontal_Pos + new Vector3(0,-100,0), out hit,(1<<LayerMask.NameToLayer("Land_lyr")))){
 				LandScriptCS _ls = (LandScriptCS)(hit.transform.GetComponent(typeof(LandScriptCS)));
 			
-				if(_ls != null){
+				if(_ls != null && !isInAir()){
 					_ls.hit();
 				}
 			}
@@ -535,7 +535,7 @@ public class ControllerScriptCS : MonoBehaviour {
 			if( Physics.Linecast(Desired_Horinzontal_Pos + new Vector3(0,20,0),Desired_Horinzontal_Pos + new Vector3(0,-100,0), out hit,(1<<LayerMask.NameToLayer("Bomb_lyr")))){
 				BombCS _ls = (BombCS)(hit.transform.GetComponent(typeof(BombCS)));
 				
-				if(_ls != null){
+				if(_ls != null && !isInAir()){
 					_ls.boom();
 				}
 			}

@@ -20,6 +20,22 @@ public class PlayerFrontColliderScriptCS : MonoBehaviour {
 	
 	void OnCollisionEnter(Collision collision)
 	{		
+		MoveForwardCS obj = (MoveForwardCS)collision.collider.GetComponent (typeof(MoveForwardCS));
+		if (obj != null) {
+						obj.stop ();	
+				} else {
+			obj = (MoveForwardCS)collision.collider.GetComponentInChildren (typeof(MoveForwardCS));
+			if (obj != null) {
+				obj.stop ();	
+			}
+			else{
+				obj = (MoveForwardCS)collision.collider.transform.parent.GetComponent (typeof(MoveForwardCS));
+				if (obj != null) {
+					obj.stop ();	
+				}
+			}
+		}
+
 		hPlayerSidesColliderScriptCS.deactivateCollider();	//dont detect stumbles on death
 		hInGameScriptCS.collidedWithObstacle();	//play the death scene
 	}
