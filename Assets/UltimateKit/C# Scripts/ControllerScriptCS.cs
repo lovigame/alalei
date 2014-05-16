@@ -456,7 +456,7 @@ public class ControllerScriptCS : MonoBehaviour {
 		bFlyUp = true;
 		bExecuteLand = true;
 		bInAir = true;
-		
+		bFlyDown = false;
 		fCurrentFlyVelocity = fFlyPush;
 		fCurrentHeight = tPlayer.position.y;
 	}
@@ -465,6 +465,7 @@ public class ControllerScriptCS : MonoBehaviour {
 	{
 		Debug.Log ("flyend");
 		bFlying = false;
+		bFlyUp = false;
 		bFlyDown = true;
 	}
 

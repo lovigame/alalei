@@ -32,7 +32,7 @@ public class CameraControllerCS : MonoBehaviour {
 	private float fCameraRotationX = 0.0f;	//camera x rotation
 	private float fCameraRotationZ = 0.0f;	//camera z rotation
 	private float fCameraPositionY = 35;	//camera Y position
-	private float fCameraPositionX = -30;	//camera X position
+	private float fCameraPositionX = -40;	//camera X position
 	
 	private int iCameraState = 0;	//camera state
 	private float fCamShakeImpulse = 0.0f;	//Camera Shake Impulse

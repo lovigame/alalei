@@ -26219,6 +26219,10 @@ Prefab:
       propertyPath: m_LocalPosition.x
       value: 39.4000015
       objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 600c810e6b6fe4ae39346bec42372740, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 600c810e6b6fe4ae39346bec42372740, type: 2}
   m_RootGameObject: {fileID: 1944109847}

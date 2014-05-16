@@ -20,7 +20,6 @@ public class MoveForwardCS : MonoBehaviour {
 	private float fAngle = 0.0f;
 	// Use this for initialization
 	void Start () {
-		Debug.Log ("start");
 		bMoving = true;
 
 		hCheckPointsMainCS = (CheckPointsMainCS)GameObject.Find("Player").GetComponent(typeof(CheckPointsMainCS));
