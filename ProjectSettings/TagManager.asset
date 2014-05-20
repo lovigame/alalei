@@ -7,6 +7,10 @@ TagManager:
   - ob_tag
   - PowerUps_tag
   - 
+  - FxTemporaire
+  - 
+  - Mask
+  - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
   Builtin Layer 2: Ignore Raycast
@@ -20,7 +24,7 @@ TagManager:
   User Layer 10: Walls_lyr
   User Layer 11: Ball_Collider_lyr
   User Layer 12: Obstacles_lyr
-  User Layer 13: Land2_lyr
+  User Layer 13: Mask_lyr
   User Layer 14: Bomb_lyr
   User Layer 15: Land_lyr
   User Layer 16: 

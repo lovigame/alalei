@@ -134,7 +134,7 @@ public class ControllerScriptCS : MonoBehaviour {
 	public GameObject[] bossPrefabs;
 	private bool bBattling = false;
 	private Transform tBoss;
-	public float fBossDistance = 200;
+	public float fBossDistance = 100;
 	private float fBossHeight = 280;
 
 	public bool isBattling(){
@@ -145,11 +145,19 @@ public class ControllerScriptCS : MonoBehaviour {
 		return tBoss;
 	}
 
-	public void startBattle(float bossdistance){
+	public void startBattle(){
 		bBattling = true;
-		fBossDistance = bossdistance;
 		tBoss = ((GameObject)(Instantiate (bossPrefabs[0]))).transform;
 	}
+
+	public void endBattle()
+	{
+		bBattling = false;
+		if (tBoss != null) {
+						Destroy (tBoss.gameObject);
+				}
+		tBoss = null;
+		}
 	
 	public void toggleSwipeControls(bool state)
 	{
@@ -311,9 +319,9 @@ public class ControllerScriptCS : MonoBehaviour {
 	
 	void FixedUpdate()
 	{
-		if (!isBattling ()) {
-			startBattle (50);		
-		}
+		//if (!isBattling ()) {
+		//	startBattle ();		
+		//}
 		if (mecanimEnabled)//set position and rotation of the mesh to its original values
 		{
 			aPlayerMecAnim.transform.localPosition = v3DefaultPlayerAnimPosition;
@@ -417,7 +425,7 @@ public class ControllerScriptCS : MonoBehaviour {
 
 	public Vector3 applyRotation(Vector3 pos){
 		Matrix4x4 mat = new Matrix4x4 ();
-		mat.SetTRS (new Vector3(0,0,0),tPlayer.rotation,new Vector3(1,1,1));
+		mat.SetTRS (new Vector3(0,0,0),tPlayerRotation.rotation,new Vector3(1,1,1));
 		return mat.MultiplyVector (pos);
 	}
 	/*
@@ -502,17 +510,7 @@ public class ControllerScriptCS : MonoBehaviour {
 		fCurrentDistance = fCurrentDistanceOnPath + hPatchesRandomizerCS.getCoveredDistance();//total distance since the begining of the run
 		fCurrentMileage = fCurrentDistance/12.0f;//calculate milage to display score on HUD
 
-		float fBossDistanceOnPath = 0;
-		float tBossAngle = 0;
-		Vector3 BossDirection = new Vector3(0,0,0);
-		Vector3 Desired_boss = new Vector3(0,0,0);
 
-		if (isBattling ()) {
-						fBossDistanceOnPath = hCheckPointsMainCS.setBossNextMidPointandRotation (fCurrentDistanceOnPath + fBossDistance, fCurrentForwardSpeed);
-						tBossAngle = hCheckPointsMainCS.getBossAngle ()-90;
-						BossDirection = hCheckPointsMainCS.getBossDirection ();
-						Desired_boss = calculateBossHorizontalPosition (0, BossDirection);
-				}
 
 		tCurrentAngle = hCheckPointsMainCS.getCurrentAngle();//get the angle according to the position on path
 		//set player rotation according to the current player position on the path's curve (if any)
@@ -520,8 +518,30 @@ public class ControllerScriptCS : MonoBehaviour {
 		
 		CurrentDirection = hCheckPointsMainCS.getCurrentDirection();
 		Vector3 Desired_Horinzontal_Pos = calculateHorizontalPosition(iStrafeDirection);
+
+		float fBossDistanceOnPath = 0;
+		float tBossAngle = 0;
+		Vector3 BossDirection = new Vector3(0,0,0);
+		Vector3 Desired_boss = new Vector3(0,0,0);
+
+		RaycastHit h;
+		if (Physics.Linecast (Desired_Horinzontal_Pos + new Vector3 (0, 20, 0), Desired_Horinzontal_Pos + new Vector3 (0, -100, 0), out h, (1 << LayerMask.NameToLayer ("Mask_lyr")))) {
+			MaskCS _ls = (MaskCS)(h.transform.GetComponent(typeof(MaskCS)));
+
+			if(_ls != null){
+				_ls.trigger();
+			}
+		}
 		
-		bGroundhit = Physics.Linecast(Desired_Horinzontal_Pos + new Vector3(0,20,0),Desired_Horinzontal_Pos + new Vector3(0,-100,0), out hitInfo,(1<<LayerMask.NameToLayer("Terrain_lyr")));	
+		if (isBattling ()) {
+			fBossDistanceOnPath = hCheckPointsMainCS.setBossNextMidPointandRotation (fCurrentDistanceOnPath + fBossDistance, fCurrentForwardSpeed);
+			tBossAngle = hCheckPointsMainCS.getBossAngle ()-90;
+			BossDirection = hCheckPointsMainCS.getBossDirection ();
+			Desired_boss = calculateBossHorizontalPosition (0, BossDirection);
+			
+		}
+		
+		bGroundhit = Physics.Linecast(Desired_Horinzontal_Pos + new Vector3(0,60,0),Desired_Horinzontal_Pos + new Vector3(0,-100,0), out hitInfo,(1<<LayerMask.NameToLayer("Terrain_lyr")));	
 		
 		if (bGroundhit && hPitsMainControllerCS.isFallingInPit () == false) {//calculate player position in y-axis
 			RaycastHit hit;
@@ -559,9 +579,15 @@ public class ControllerScriptCS : MonoBehaviour {
 				fCurrentHeight = tPlayer.position.y;
 			}
 		}
-		
+
+		if(!bInAir && Mathf.Abs( tPlayer.position.y - fContactPointY) > 1f){
+			bInAir = true;
+			aPlayer.CrossFade("jump", 0.1f);
+			fCurrentUpwardVelocity = 0f;
+		}
 		if(!bInAir)//set player position when not in air
 		{			
+
 			tPlayer.position = new Vector3(tPlayer.position.x,
 					fContactPointY+0.6f, tPlayer.position.z);
 		}
@@ -587,18 +613,15 @@ public class ControllerScriptCS : MonoBehaviour {
 			}
 		}
 
-		//if (isFlying ()) {
-		//	tPlayer.position = new Vector3 (Desired_Horinzontal_Pos.x,
-			//                                tPlayer.position.y+fFlyHeight, Desired_Horinzontal_Pos.z);
-			//	} else {
-						tPlayer.position = new Vector3 (Desired_Horinzontal_Pos.x,
-			tPlayer.position.y, Desired_Horinzontal_Pos.z);//set player position in x and z axis
-			//	}
+
+			tPlayer.position = new Vector3 (Desired_Horinzontal_Pos.x,tPlayer.position.y, Desired_Horinzontal_Pos.z);//set player position in x and z axis
+			
 
 		if (isBattling ()) {
 		
 
 			tBoss.position = new Vector3(Desired_boss.x,30,Desired_boss.z);	
+
 			tBoss.localEulerAngles = new Vector3(tPlayerRotation.localEulerAngles.x, -tBossAngle, tPlayerRotation.localEulerAngles.z);
 		}
 		
@@ -860,7 +883,9 @@ public class ControllerScriptCS : MonoBehaviour {
 	public Vector3 getPositionRelativePlayer(Vector3 pos,int lane){
 		return new Vector3 (0,0,0);
 	}
-	
+
+
+
 	/*
 	*	FUNCTION: Make the player change lanes
 	*	CALLED BY:	SetTransform()
@@ -942,6 +967,8 @@ public class ControllerScriptCS : MonoBehaviour {
 			return new Vector3(fHorizontalPoint.x,tPlayerRotation.position.y,fHorizontalPoint.y);
 		}//end of else
 	}
+
+
 
 	private float fBossStrafePosition = 0.0f;	//keeps track of strafe position at each frame
 	private float fBossSpeedMultiplier = 5.0f;	//how fast to strafe/ change lane
@@ -1322,6 +1349,24 @@ public class ControllerScriptCS : MonoBehaviour {
 				aPlayerMecAnim.SetBool(anim, true);
 				bInStrafe = true;
 			}
+		}
+
+		Vector3 dst;
+		if (strafeDirection == StrafeDirection.Strafe_Right) 
+		{
+			dst = applyRotation(new Vector3(0,0,-20));
+
+		} 
+		else 
+		{
+
+			dst = applyRotation(new Vector3(0,0,20));	
+		}
+		RaycastHit h;
+		if (Physics.Linecast (tPlayer.transform.position, tPlayer.transform.position + dst, out h, (1 << LayerMask.NameToLayer ("Terrain_lyr")))) {
+
+			hPlayerFrontColliderScriptCS.deactivateCollider();//pause front collision detection till stumble is processed
+			processStumble();
 		}
 	}//end of strafe player function
 	

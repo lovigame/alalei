@@ -20,7 +20,7 @@ public class MoveForwardCS : MonoBehaviour {
 	private float fAngle = 0.0f;
 	// Use this for initialization
 	void Start () {
-		bMoving = true;
+		bMoving = false;
 
 		hCheckPointsMainCS = (CheckPointsMainCS)GameObject.Find("Player").GetComponent(typeof(CheckPointsMainCS));
 		hPatchesRandomizerCS = (PatchesRandomizerCS)GameObject.Find("Player").GetComponent(typeof(PatchesRandomizerCS));
@@ -132,11 +132,10 @@ public class MoveForwardCS : MonoBehaviour {
 			if(angle>180.0f)
 				angle = angle-360.0f;
 	
-			this.transform.eulerAngles = new Vector3(this.transform.rotation.x, -angle,this.transform.rotation.z);
+			this.transform.eulerAngles = new Vector3(this.transform.eulerAngles.x, -angle+180,this.transform.eulerAngles.z);
 
-
+			//this.transform.Translate(pos+offset - this.transform.position);
 			this.transform.position = pos + offset;
-		
 				} else {
 			if(Vector3.Distance(GameObject.Find("Player").transform.position,this.transform.position) <= fStartDistance){
 				bMoving = true;

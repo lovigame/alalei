@@ -20,7 +20,7 @@ public class BossControllerCS : MonoBehaviour {
 	void dropBomb(Vector3 pos){
 		GameObject obj = (GameObject)Instantiate(Bombs[Random.Range(0,Bombs.Length)]);
 		obj.transform.parent = hCheckPointsMainCS.getBossPatch ().transform;
-		((BombCS)(obj.GetComponentInChildren<BombCS>())).move(transform.position,pos,1.0f);
+		((BombCS)(obj.GetComponentInChildren<BombCS>())).move(transform.position,pos,0.3f);
 	}
 
 	public void Bomb(){

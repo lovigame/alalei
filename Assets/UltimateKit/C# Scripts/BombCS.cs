@@ -3,6 +3,8 @@ using System.Collections;
 
 public class BombCS : MonoBehaviour {
 
+	public GameObject explosion;
+
 	private Vector3 vFrom;
 	private Vector3 vTo;
 	private bool moving = false;
@@ -62,9 +64,11 @@ public class BombCS : MonoBehaviour {
 						BossControllerCS bcs = (BossControllerCS)hControllerScriptCS.getBoss().GetComponent(typeof(BossControllerCS));
 						bcs.Bomb();
 					}
-
+					GameObject particles = (GameObject)Instantiate(explosion);
+					particles.transform.position = this.transform.position;
+					particles.transform.localScale = new Vector3(50,50,50);
 					Destroy(this.transform.parent.gameObject);
-					Debug.Log("destroy");
+
 				}
 			}
 			else{
@@ -85,16 +89,22 @@ public class BombCS : MonoBehaviour {
 		switch (eType) {
 		case BombType.BTBomb:
 		{
+			GameObject particles = (GameObject)Instantiate(explosion);
+			particles.transform.position = this.transform.position;
+		//	particles.transform.localScale = new Vector3(5000,5000,5000);
 			Destroy(this.transform.parent.gameObject);
-
 			hPlayerSidesColliderScriptCS.deactivateCollider();	//dont detect stumbles on death
 			hInGameScriptCS.collidedWithObstacle();	//play the death scene
+
+
 		}
 			break;
 		case BombType.BTBullet:
 		{
 			bDead = true;
+			if(hControllerScriptCS.getBoss() != null){
 			move (this.transform.position,hControllerScriptCS.getBoss().position,0.3f);
+			}
 		}
 			break;
 		}

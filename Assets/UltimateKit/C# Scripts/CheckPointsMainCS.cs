@@ -236,25 +236,24 @@ public class CheckPointsMainCS : MonoBehaviour {
 		Vector3[] poss;
 		Vector3 ForwardPointVector3;
 		Vector3 BackPointVector3;
-		if (CurrentPercent >= 1.0) {//if the Player has crossed the current patch
+		if (BossPercent >= 1.0) {//if the Player has crossed the current patch
 						float PreviousPathLength = fPathLength;
 			
 						CurrentDistanceOnPath = (CurrentDistanceOnPath + CurrentForwardSpeed) - PreviousPathLength;
 						CurrentDistanceOnPath = Mathf.Abs (CurrentDistanceOnPath);
 			
-					BossPercent = (CurrentDistanceOnPath + CurrentForwardSpeed) / fPathLength;
+			BossPercent = (CurrentDistanceOnPath + CurrentForwardSpeed) / hPatchesRandomizerCS.getNextPathLength();
 			poss = NextCPPositions;
-			;
-			pos = getCurrentWSPointBasedOnPercent(BossPercent);
-			ForwardPointVector3 = getCurrentWSPointBasedOnPercent(BossPercent+0.001f);
-			BackPointVector3 = getCurrentWSPointBasedOnPercent(BossPercent-0.001f);
-			bosspatch = hPatchesRandomizerCS.getCurrentPatch();
-				} else {
-			poss = CPPositions;
 			pos = getNextWSPointBasedOnPercent(BossPercent);
 			ForwardPointVector3 = getNextWSPointBasedOnPercent(BossPercent+0.001f);
 			BackPointVector3 = getNextWSPointBasedOnPercent(BossPercent-0.001f);
 			bosspatch = hPatchesRandomizerCS.getNextPatch();
+				} else {
+			poss = CPPositions;
+			pos = getCurrentWSPointBasedOnPercent(BossPercent);
+			ForwardPointVector3 = getCurrentWSPointBasedOnPercent(BossPercent+0.001f);
+			BackPointVector3 = getCurrentWSPointBasedOnPercent(BossPercent-0.001f);
+			bosspatch = hPatchesRandomizerCS.getCurrentPatch();
 				}
 		Vector3 MidPointVector3 = Interp (poss, BossPercent);
 		MidPointVector3 = pos;

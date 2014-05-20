@@ -141,6 +141,10 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		((PathLineDrawerCS)(obj.GetComponentInChildren<PathLineDrawerCS> ())).relocate (obj.transform.position);
 	}
 
+	public float getNextPathLength(){
+		return ((PathLineDrawerCS)(goNextPatch.GetComponentInChildren<PathLineDrawerCS> ())).fPathLength;
+	}
+
 	public float getPatchSize(GameObject obj)
 	{
 
