@@ -12,6 +12,7 @@ GameObject:
   - 64: {fileID: 6400000}
   - 23: {fileID: 2300000}
   - 114: {fileID: 11400000}
+  - 111: {fileID: 11100000}
   m_Layer: 15
   m_Name: Land_acc
   m_TagString: Untagged
@@ -71,6 +72,20 @@ MeshCollider:
   m_SmoothSphereCollisions: 0
   m_Convex: 0
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!111 &11100000
+Animation:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400012, guid: 80cfa86f73b2f49f9940fea36d10e3aa, type: 3}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1

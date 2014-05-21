@@ -99,7 +99,7 @@ public class CameraControllerCS : MonoBehaviour {
 
 			tCamera.position = new Vector3( tPlayerMesh.position.x + pos.x,tPlayerMesh.position.y + pos.y,tPlayerMesh.position.z + pos.z );
 
-
+			//Debug.Log(tPlayerMesh.position.y + pos.y);
 			/*
 			tCamera.position = new Vector3( tPlayerMesh.position.x + pos.x,
 			                               Mathf.Lerp(tCamera.position.y,tPlayerMesh.position.y + pos.y, 1),

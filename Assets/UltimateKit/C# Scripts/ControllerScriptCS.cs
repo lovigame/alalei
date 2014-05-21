@@ -103,7 +103,7 @@ public class ControllerScriptCS : MonoBehaviour {
 	
 	//Physics Constants
 	//change these to adjust the initial and final movement speed
-	private float fStartingWalkSpeed = 150.0f;//when player starts running
+	private float fStartingWalkSpeed = 180.0f;//when player starts running
 	private float fEndingWalkSpeed = 230.0f;	//final speed after acclerating
 	private float fCurrentWalkAccleration = 0.5f;	//rate of accleartion
 	
@@ -170,7 +170,7 @@ public class ControllerScriptCS : MonoBehaviour {
 	
 	void Start()
 	{
-
+		//GameObject objPrefab = (GameObject)Resources.Load("UltimateKit/test/scene/demo/lands/demo_land_terrain.prefab");
 		//script references
 		hPatchesRandomizerCS = (PatchesRandomizerCS)this.GetComponent(typeof(PatchesRandomizerCS));
 		hMissionsControllerCS = (MissionsControllerCS)this.GetComponent(typeof(MissionsControllerCS));
@@ -486,7 +486,6 @@ public class ControllerScriptCS : MonoBehaviour {
 	{
 		bJumpFlag = true;
 		fJumpAddPush = force;
-		Debug.Log ("f "+force);
 	}
 	
 	/*
@@ -580,7 +579,7 @@ public class ControllerScriptCS : MonoBehaviour {
 			}
 		}
 
-		if(!bInAir && Mathf.Abs( tPlayer.position.y - fContactPointY) > 1f){
+		if(!hInGameScriptCS.isEnergyZero() && !bInAir && Mathf.Abs( tPlayer.position.y - fContactPointY) > 1f){
 			bInAir = true;
 			aPlayer.CrossFade("jump", 0.1f);
 			fCurrentUpwardVelocity = 0f;

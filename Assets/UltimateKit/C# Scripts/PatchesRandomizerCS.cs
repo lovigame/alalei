@@ -132,7 +132,7 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		//initSubMove (goNextPatch,goCurrentPatch);
 
 		//goNextPatch2 = (GameObject)Instantiate((GameObject)patchesPrefabs[UnityEngine.Random.Range(0,patchesPrefabs.Length)], new Vector3(0,0,0), new Quaternion());
-	//	connectPatch (goNextPatch,goNextPatch2);
+		//connectPatch (goNextPatch,goNextPatch2);
 	}
 
 	public void relocateCP(GameObject obj,Vector3 pos)
@@ -225,8 +225,8 @@ public class PatchesRandomizerCS : MonoBehaviour {
 		}
 		next.transform.RotateAround (fpos, new Vector3 (0, 1, 0), eulerAngles.y);
 
-
-		relocateCP (next,-ocpos+fpos);
+		relocateCP (next,-spos+fpos);
+		//relocateCP (next,-ocpos+fpos);
 	}
 
 	public GameObject getCurrentPatch() { return goCurrentPatch; }
