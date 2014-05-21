@@ -19,6 +19,7 @@ public class ControllerScriptCS : MonoBehaviour {
 	enum StrafeDirection {Strafe_Left = 0, Strafe_Right = 1}
 	public enum ControlType { Swipe = 1, Gyro = 2 }
 
+	private MotionBlur mb;
 	private Transform tPlayer;	//the main character transform
 	private Transform tPlayerRotation;	//Player child transform to rotate it in game
 	private Animation aPlayer;				//character animation
@@ -172,6 +173,8 @@ public class ControllerScriptCS : MonoBehaviour {
 	{
 		//GameObject objPrefab = (GameObject)Resources.Load("UltimateKit/test/scene/demo/lands/demo_land_terrain.prefab");
 		//script references
+		mb = (MotionBlur)GameObject.Find("Main Camera").GetComponent(typeof(MotionBlur));
+		mb.enabled = false;
 		hPatchesRandomizerCS = (PatchesRandomizerCS)this.GetComponent(typeof(PatchesRandomizerCS));
 		hMissionsControllerCS = (MissionsControllerCS)this.GetComponent(typeof(MissionsControllerCS));
 		hGlobalAchievementControllerCS = (GlobalAchievementControllerCS)this.GetComponent(typeof(GlobalAchievementControllerCS));
@@ -455,6 +458,7 @@ public class ControllerScriptCS : MonoBehaviour {
 	{
 		fSpeedRate = rate;
 		fSpeedRestTime = time;
+		mb.enabled = true;
 	}
 
 	public void flyUP()
@@ -497,6 +501,7 @@ public class ControllerScriptCS : MonoBehaviour {
 		if (fSpeedRestTime > 0.0f) {
 						fSpeedRestTime -= Time.deltaTime;
 						if (fSpeedRestTime <= 0.0f) {
+				mb.enabled = false;
 								fSpeedRestTime = 0.0f;
 								fSpeedRate = 1.0f;
 						}
